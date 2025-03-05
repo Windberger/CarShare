@@ -15,43 +15,45 @@ function Login() {
                                     type="text"
                                     name="firstName"
                                     placeholder="Firstname"
-                                    className="w-1/2 p-3 bg-gray-50 border  rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                    className="w-1/2 p-3 bg-gray-50 border text-black rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
                                 />
                                 <input
                                     type="text"
                                     name="lastName"
                                     placeholder="Lastname"
-                                    className="w-1/2 p-3  bg-gray-50  border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                    className="w-1/2 p-3  bg-gray-50 text-black  border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
                                 />
                             </div>
                         )}
                         <div className="mb-7">
                             <input type="text" id="username" name="username" placeholder={"Username"}
-                                   className="w-full h-12  bg-gray-50  border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                   className="w-full h-12  bg-gray-50 text-black  border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
                                    autoComplete="off"/>
                         </div>
                         <div className="mb-4">
                             <input type="password" id="password" name="password" placeholder={"Password"}
-                                   className="w-full h-12 bg-gray-50 border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                   className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
                                    autoComplete="off"/>
                         </div>
                         <div className="mb-10 flex items-center">
 
                             {!register && (
                                 <div>
-                                    <input type="checkbox" id="remember" name="remember" className="text-[#194569]"/>
-                                    <label htmlFor="remember" className="text-[#194569] ml-2">Remember Me</label>
+                                    <input type="checkbox" id="remember" name="remember" />
+                                    <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>
                                 </div>
                             )}
 
                         </div>
                         <button type="submit"
                                 className="bg-[#194569] hover:bg-blend-color-burn text-white font-semibold rounded-xl p-3 w-full">
-                            Login
+                            {register ? "Register" : "Login"}
                         </button>
                     </form>
                     <div className="mt-6 text-[#194569] text-center">
-                        <a href="#" onClick={() => setRegister(!register)} className="hover:underline">{register? "Already have an Account": "Register"}</a>
+                        <label>{register ? "Already have an Account?" : "No Account yet?"}</label>
+                        <a href="#" onClick={() => setRegister(!register)}
+                           className="hover:underline ml-1">{register ? "Login" : "Register"}</a>
                     </div>
                 </div>
             </div>
