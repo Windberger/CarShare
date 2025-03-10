@@ -1,13 +1,17 @@
 import {useState} from "react";
+import PasswordChecklist from "react-password-checklist"
 
 /**
- * @author Johanna
+ * @author Johanna Hechtl
  * @since 03.03.2025
  */
 
 
+
 function Login() {
     const [register, setRegister] = useState(false)
+    const [password, setPassword] = useState("")
+    const [repeatPassword, setRepeatPassword] = useState("")
     return (
         <div className="flex h-screen w-screen bg-white">
             <div className="w-1/2 flex justify-center items-center">
@@ -32,20 +36,39 @@ function Login() {
                             </div>
                         )}
                         <div className="mb-7">
-                            <input type="text" id="username" name="username" placeholder={"Username"}
+                            <input type="email" id="email" name="email" placeholder={"Email"}
                                    className="w-full h-12  bg-gray-50 text-black  border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
                                    autoComplete="off"/>
                         </div>
                         <div className="mb-4">
                             <input type="password" id="password" name="password" placeholder={"Password"}
                                    className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                   autoComplete="off"/>
+                                   autoComplete="off"
+                                   onChange={e => setPassword(e.target.value)}/>
+                        </div>
+
+                        <div className="mb-4">
+                            <input type="password" id="repeat-password" name="repeat-password"
+                                   placeholder={"Repeat Password"}
+                                   className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                   autoComplete="off"
+                                   onChange={e => setRepeatPassword(e.target.value)}/>
                         </div>
                         <div className="mb-10 flex items-center">
 
+                            {register && (
+                                <PasswordChecklist className={"text-black"}
+                                                   rules={["minLength", "specialChar", "number", "match"]}
+                                                   minLength={8}
+                                                   value={password}
+                                                   valueAgain={repeatPassword}
+
+                                />
+                            )}
+
                             {!register && (
                                 <div>
-                                    <input type="checkbox" id="remember" name="remember" />
+                                    <input type="checkbox" id="remember" name="remember"/>
                                     <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>
                                 </div>
                             )}
