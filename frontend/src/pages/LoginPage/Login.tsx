@@ -47,33 +47,38 @@ function Login() {
                                    onChange={e => setPassword(e.target.value)}/>
                         </div>
 
-                        <div className="mb-4">
-                            <input type="password" id="repeat-password" name="repeat-password"
-                                   placeholder={"Repeat Password"}
-                                   className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                   autoComplete="off"
-                                   onChange={e => setRepeatPassword(e.target.value)}/>
-                        </div>
-                        <div className="mb-10 flex items-center">
 
-                            {register && (
-                                <PasswordChecklist className={"text-black"}
-                                                   rules={["minLength", "specialChar", "number", "match"]}
-                                                   minLength={8}
-                                                   value={password}
-                                                   valueAgain={repeatPassword}
-
-                                />
-                            )}
-
-                            {!register && (
-                                <div>
-                                    <input type="checkbox" id="remember" name="remember"/>
-                                    <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>
+                        {register && (
+                            <>
+                                <div className="mb-4">
+                                    <input type="password" id="repeat-password" name="repeat-password"
+                                           placeholder={"Repeat Password"}
+                                           className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                           autoComplete="off"
+                                           onChange={e => setRepeatPassword(e.target.value)}/>
                                 </div>
-                            )}
+                                <div className="mb-10 flex items-center">
 
-                        </div>
+                                    <PasswordChecklist className={"text-black"}
+                                                       rules={["minLength", "specialChar", "number", "match"]}
+                                                       minLength={8}
+                                                       value={password}
+                                                       valueAgain={repeatPassword}
+
+                                    />
+                                </div>
+
+                            </>
+
+                        )}
+
+                        {!register && (
+                            <div className="mb-10 flex items-center">
+                                <input type="checkbox" id="remember" name="remember"/>
+                                <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>
+                            </div>
+                        )}
+
                         <button type="submit"
                                 className="bg-[#194569] hover:bg-blend-color-burn text-white font-semibold rounded-xl p-3 w-full">
                             {register ? "Register" : "Login"}
