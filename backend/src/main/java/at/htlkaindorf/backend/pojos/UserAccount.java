@@ -11,13 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class User {
+public class UserAccount {
     @Id
-    private String user_id;
+    private Long user_id;
     private String email;
-    private String password;
     private String firstname;
     private String lastname;
-
+    private String password;
 
 }
