@@ -1,9 +1,24 @@
 package at.htlkaindorf.backend.pojos;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Address {
-    private Long address_id;
-    private Integer postal_code;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long addressId;
+
+    private Integer postalCode;
+
     private String city;
+
     private String street;
-    private String house_number;
+
+    private String houseNumber;
 }
