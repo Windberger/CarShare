@@ -1,11 +1,8 @@
 package at.htlkaindorf.backend.web;
 
 import at.htlkaindorf.backend.pojos.UserAccount;
-import at.htlkaindorf.backend.repositories.UserRepository;
-import at.htlkaindorf.backend.services.UserService;
-import jakarta.servlet.http.HttpServletRequest;
+import at.htlkaindorf.backend.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserAccountController {
 
-    private final UserService userService;
+    private final UserAccountService userService;
 //    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")

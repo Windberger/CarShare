@@ -1,19 +1,17 @@
-package at.htlkaindorf.backend.services;
+package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.pojos.UserAccount;
-import at.htlkaindorf.backend.repositories.UserRepository;
+import at.htlkaindorf.backend.repositories.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserAccountService {
 
-    private final UserRepository userRepository;
+    private final UserAccountRepository userRepository;
 
 
     public Optional<UserAccount> registerUser(UserAccount user) {
