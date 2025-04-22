@@ -5,6 +5,7 @@ import at.htlkaindorf.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public Optional<UserAccount> registerUser(UserAccount user) {
@@ -21,9 +23,11 @@ public class UserService {
             return Optional.empty();
         }
 
-        UserAccount savedUser = userRepository.save(user);
+        UserAccount newUser = new UserAccount();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return Optional.of(savedUser);
+        userRepository.save(newUser);
+        return Optional.of(newUser);  // TODO: dto von user statt user zurückgeben
     }
 
 
