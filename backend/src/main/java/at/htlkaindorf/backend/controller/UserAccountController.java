@@ -1,11 +1,7 @@
-package at.htlkaindorf.backend.controller;
+package at.htlkaindorf.backend.web;
 
 import at.htlkaindorf.backend.pojos.UserAccount;
-<<<<<<<< HEAD:backend/src/main/java/at/htlkaindorf/backend/controller/UserController.java
-import at.htlkaindorf.backend.services.UserService;
-========
 import at.htlkaindorf.backend.service.UserAccountService;
->>>>>>>> origin/master:backend/src/main/java/at/htlkaindorf/backend/controller/UserAccountController.java
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +24,9 @@ public class UserAccountController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody UserAccount user) {
+//        if(userRepository.existsByEmail(signupRequest.getEmail())){
+//            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
+//        }
         return ResponseEntity.ok(userService.registerUser(user));
     }
 

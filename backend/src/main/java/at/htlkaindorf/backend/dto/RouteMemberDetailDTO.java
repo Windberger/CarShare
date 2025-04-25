@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RouteMemberDTO {
+public class RouteMemberDetailDTO {
 
     private Long routeId;
     private Long memberId;
+    private RouteDTO route;
+    private UserAccountDTO member;
     private AddressDetailDTO startAddress;
     private AddressDetailDTO endAddress;
+
 }
