@@ -1,4 +1,4 @@
-package at.htlkaindorf.backend.web;
+package at.htlkaindorf.backend.controller;
 
 import at.htlkaindorf.backend.pojos.UserAccount;
 import at.htlkaindorf.backend.service.UserAccountService;
@@ -22,19 +22,19 @@ public class UserAccountController {
     private final UserAccountService userService;
 //    private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/register")
-    public ResponseEntity<Object> registerUser(@RequestBody UserAccount user) {
-//        if(userRepository.existsByEmail(signupRequest.getEmail())){
-//            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
-//        }
-        return ResponseEntity.ok(userService.registerUser(user));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login() {
-        return null;
-
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<Object> registerUser(@RequestBody UserAccount user) {
+////        if(userRepository.existsByEmail(signupRequest.getEmail())){
+////            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
+////        }
+//        return ResponseEntity.ok(userService.registerUser(user));
+//    }
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login() {
+//        return null;
+//
+//    }
 
 
 }

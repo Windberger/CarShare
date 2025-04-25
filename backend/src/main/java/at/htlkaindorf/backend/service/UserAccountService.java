@@ -1,20 +1,31 @@
-package at.htlkaindorf.backend.services;
+package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.pojos.UserAccount;
-import at.htlkaindorf.backend.repositories.UserRepository;
+import at.htlkaindorf.backend.repositories.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+* @author Mario Windberger
+* @since 25.04.2025
+*/
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserAccountService  implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserAccountRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -31,4 +42,18 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserAccount user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(email + " not found." ));
+
+        Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                authorities
+        );
+    }
 }

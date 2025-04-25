@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(ResourceNotFoundException.class)
+//    @ExceptionHandler(Res.class)
 //    public ResponseEntity<ErrorResponse> handleResourceNotFound(
 //            ResourceNotFoundException ex
 //    ) {
@@ -17,5 +17,6 @@ public class GlobalExceptionHandler {
 //
 //        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 //    }
+
 }
 
