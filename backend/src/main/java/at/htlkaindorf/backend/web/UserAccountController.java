@@ -24,9 +24,9 @@ public class UserAccountController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@RequestBody UserAccount user) {
-        if(userRepository.existsByEmail(signupRequest.getEmail())){
-            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
-        }
+//        if(userRepository.existsByEmail(signupRequest.getEmail())){
+//            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
+//        }
         return ResponseEntity.ok(userService.registerUser(user));
     }
 
