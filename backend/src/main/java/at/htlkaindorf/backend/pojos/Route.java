@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,9 +29,12 @@ public class Route {
     private LocalDateTime startTime;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "driver")
     private UserAccount driver;
 
     private String joinCode;
+
+    @OneToMany(mappedBy = "route")
+    private List<RouteMember> routeMembers;
 
 }
