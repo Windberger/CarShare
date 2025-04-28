@@ -1,5 +1,7 @@
 import {useState} from "react";
 import PasswordChecklist from "react-password-checklist"
+import {LoginUser, RegisterUser} from "../../interfaces/UserInterfaces.ts";
+import {loginUser, registerUser} from "../../services/LoginService.ts";
 
 /**
  * @author Johanna Hechtl
@@ -9,16 +11,57 @@ import PasswordChecklist from "react-password-checklist"
 
 
 function Login() {
-    const [register, setRegister] = useState(false)
-    const [password, setPassword] = useState("")
-    const [repeatPassword, setRepeatPassword] = useState("")
+    const [register, setRegister] = useState(false);
+
+    const [password, setPassword] = useState("");
+    const [repeatPassword, setRepeatPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (register) {
+            const user: RegisterUser = {
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                password: password
+            }
+
+            registerUser(user)
+                .then((res) => {
+                    console.log(res);
+                    alert("User registered successfully");
+                }).catch((err) => {
+                console.log(err);
+                alert("User registration failed");
+            });
+
+        } else {
+            const user: LoginUser = {
+                email: email,
+                password: password
+            }
+            loginUser(user)
+                .then((res) => {
+                    console.log(res);
+                    alert("User logged in successfully");
+                }).catch((err) => {
+                console.log(err);
+                alert("User login failed");
+            });
+        }
+    }
+
+
     return (
         <div className="flex h-screen w-screen bg-white">
             <div className="w-1/2 flex justify-center items-center">
                 <div className="w-full max-w-md p-8">
                     <h1 className="text-4xl font-bold mb-10 text-[#194569] text-center">{register ? "Register" : "Login"}</h1>
-                    <form action="#" method="POST">
-
+                    <form onSubmit={handleSubmit}>
                         {register && (
                             <div className="flex space-x-2 mb-7">
                                 <input
@@ -26,19 +69,23 @@ function Login() {
                                     name="firstName"
                                     placeholder="Firstname"
                                     className="w-1/2 p-3 bg-gray-50 border text-black rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                    onChange={e => setFirstName(e.target.value)}
                                 />
                                 <input
                                     type="text"
                                     name="lastName"
                                     placeholder="Lastname"
                                     className="w-1/2 p-3  bg-gray-50 text-black  border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
+                                    onChange={e => setLastName(e.target.value)}
                                 />
                             </div>
                         )}
                         <div className="mb-7">
                             <input type="email" id="email" name="email" placeholder={"Email"}
                                    className="w-full h-12  bg-gray-50 text-black  border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                   autoComplete="off"/>
+                                   autoComplete="off"
+                                   onChange={e => setEmail(e.target.value)}
+                            />
                         </div>
                         <div className="mb-4">
                             <input type="password" id="password" name="password" placeholder={"Password"}
