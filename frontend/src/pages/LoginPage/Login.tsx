@@ -2,6 +2,7 @@ import {useState} from "react";
 import PasswordChecklist from "react-password-checklist"
 import {LoginUser, RegisterUser} from "../../interfaces/UserInterfaces.ts";
 import {loginUser, registerUser} from "../../services/LoginService.ts";
+import {useNavigate} from "react-router-dom";
 
 /**
  * @author Johanna Hechtl
@@ -18,6 +19,14 @@ function Login() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const navigate = useNavigate();
+
+
+    const isEmailValid = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -53,6 +62,8 @@ function Login() {
                 alert("User login failed");
             });
         }
+
+        navigate("/dashboard");
     }
 
 
@@ -111,6 +122,7 @@ function Login() {
                                                        minLength={8}
                                                        value={password}
                                                        valueAgain={repeatPassword}
+                                                       onChange={(isValid: never) => setIsPasswordValid(isValid)}
 
                                     />
                                 </div>
@@ -119,15 +131,22 @@ function Login() {
 
                         )}
 
-                        {!register && (
-                            <div className="mb-10 flex items-center">
-                                <input type="checkbox" id="remember" name="remember"/>
-                                <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>
-                            </div>
-                        )}
+                        {/*{!register && (*/}
+                        {/*    <div className="mb-10 flex items-center">*/}
+                        {/*        <input type="checkbox" id="remember" name="remember"/>*/}
+                        {/*        <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
 
-                        <button type="submit"
-                                className="bg-[#194569] hover:bg-blend-color-burn text-white font-semibold rounded-xl p-3 w-full">
+                        <button
+                            type="submit"
+                            className="bg-[#194569] text-white font-semibold rounded-xl p-3 w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            disabled={
+                                register
+                                    ? !isPasswordValid || !isEmailValid(email) || !firstName.trim() || !lastName.trim()
+                                    : !isEmailValid(email) || !password.trim()
+                            }
+                        >
                             {register ? "Register" : "Login"}
                         </button>
                     </form>

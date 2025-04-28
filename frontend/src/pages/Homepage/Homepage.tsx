@@ -13,7 +13,6 @@ function Homepage() {
                 </ul>
                 <div>
                     <Link className="bg-white text-[#194569] px-4 py-2 rounded mr-2" to="/login">Login</Link>
-                    <Link className="bg-green-500 text-white px-4 py-2 rounded" to="/login">Sign Up</Link>
                 </div>
             </nav>
 
