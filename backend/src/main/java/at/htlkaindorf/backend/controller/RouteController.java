@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 public class RouteController {
 
-    private  final RouteService routeService;
+    private final RouteService routeService;
 
 
     @GetMapping("/driverRoutes")
-   public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
-           @RequestParam Long userId
-    ){
+    public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
+            @RequestParam Long userId
+    ) {
         return ResponseEntity.ok(routeService.getAllDriverRoutes(userId));
 
     }
@@ -32,12 +32,10 @@ public class RouteController {
     @GetMapping("/joinedRoutes")
     public ResponseEntity<Iterable<RouteDTO>> getAllJoinedRoutes(
             @RequestParam Long userId
-    ){
+    ) {
 
         return ResponseEntity.ok(routeService.getAllJoinedRoutes(userId));
     }
-
-
 
 
 }
