@@ -1,5 +1,6 @@
 package at.htlkaindorf.backend.pojos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class Route {
     @JoinColumn(name = "end_address")
     private Address endAddress;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startTime;
 
     @ManyToOne

@@ -33,11 +33,14 @@ public class AuthenticationController {
     private final UserAccountService userAccountService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequest, HttpServletRequest request) {
-       if(userAccountService.loginUser(loginRequest, request)) {
-            return new ResponseEntity<>("User logged in successfully!", HttpStatus.OK);
+    public ResponseEntity<Long> login(@RequestBody LoginRequestDTO loginRequest, HttpServletRequest request) {
+
+        Long userId = userAccountService.loginUser(loginRequest, request);
+
+        if(userId != null) {
+            return new ResponseEntity<>(userId, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Invalid email or password!", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 

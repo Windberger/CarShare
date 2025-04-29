@@ -20,6 +20,7 @@ function Login() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const [loginSuccessful, setLoginSuccessful] = useState(false);
     const navigate = useNavigate();
 
 
@@ -43,6 +44,7 @@ function Login() {
                 .then((res) => {
                     console.log(res);
                     alert("User registered successfully");
+                    setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);
                 alert("User registration failed");
@@ -57,13 +59,16 @@ function Login() {
                 .then((res) => {
                     console.log(res);
                     alert("User logged in successfully");
+                    setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);
                 alert("User login failed");
             });
         }
 
-        navigate("/dashboard");
+        if (loginSuccessful) {
+            navigate("/dashboard");
+        }
     }
 
 
