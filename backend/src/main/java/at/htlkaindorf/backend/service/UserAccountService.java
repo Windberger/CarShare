@@ -56,7 +56,7 @@ public class UserAccountService {
     }
 
 
-    public boolean loginUser(LoginRequestDTO loginRequest, HttpServletRequest request) {
+    public Long loginUser(LoginRequestDTO loginRequest, HttpServletRequest request) {
         try {
             Authentication authenticationRequest =
                     UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getEmail(), loginRequest.getPassword());
@@ -67,9 +67,15 @@ public class UserAccountService {
             HttpSession session = request.getSession();
             session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
-            return true;
+            Optional<UserAccount> user = userRepository.findByEmail(loginRequest.getEmail());
+
+
+            if(user.isPresent()) {
+                return user.get().getUserId();
+            }
+            return null;
         } catch (Exception e) {
-            return false;
+            return null;
         }
     }
 
