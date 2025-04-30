@@ -19,11 +19,11 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long routeId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "start_address")
     private Address startAddress;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "end_address")
     private Address endAddress;
 
