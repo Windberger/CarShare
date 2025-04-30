@@ -24,11 +24,11 @@ public class RouteMember {
     @JoinColumn(name = "member_id")
     private UserAccount member;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "start_address")
     private Address startAddress;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "end_address")
     private Address endAddress;
 

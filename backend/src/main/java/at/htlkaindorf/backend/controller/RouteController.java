@@ -3,8 +3,12 @@ package at.htlkaindorf.backend.controller;
 import at.htlkaindorf.backend.dto.RouteDTO;
 import at.htlkaindorf.backend.service.RouteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/routes")
@@ -22,9 +26,9 @@ public class RouteController {
 
 
     @GetMapping("/driverRoutes")
-   public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
-           @RequestParam Long userId
-    ){
+    public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
+            @RequestParam Long userId
+    ) {
         return ResponseEntity.ok(routeService.getAllDriverRoutes(userId));
 
     }
@@ -32,12 +36,22 @@ public class RouteController {
     @GetMapping("/joinedRoutes")
     public ResponseEntity<Iterable<RouteDTO>> getAllJoinedRoutes(
             @RequestParam Long userId
-    ){
+    ) {
 
         return ResponseEntity.ok(routeService.getAllJoinedRoutes(userId));
     }
 
+    @PostMapping("/createRoute")
+    public ResponseEntity<RouteDTO> createRoute(
+            @RequestBody RouteDTO routeDTO
+    ) {
+        Optional<RouteDTO> createdRoute = routeService.createRoute(routeDTO);
 
+        if(createdRoute.isPresent()) {
+            return new ResponseEntity<>(routeDTO, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 
 }
