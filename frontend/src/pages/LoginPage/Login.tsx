@@ -3,6 +3,8 @@ import PasswordChecklist from "react-password-checklist"
 import {LoginUser, RegisterUser} from "../../interfaces/UserInterfaces.ts";
 import {loginUser, registerUser} from "../../services/LoginService.ts";
 import {useNavigate} from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext.tsx";
 
 /**
  * @author Johanna Hechtl
@@ -13,7 +15,6 @@ import {useNavigate} from "react-router-dom";
 
 function Login() {
     const [register, setRegister] = useState(false);
-
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -22,7 +23,7 @@ function Login() {
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [loginSuccessful, setLoginSuccessful] = useState(false);
     const navigate = useNavigate();
-
+    const { setUserId } =  useContext(UserContext)!;
 
     const isEmailValid = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,10 +41,11 @@ function Login() {
                 password: password
             }
 
-            registerUser(user)
+            registerUser(user, setUserId)
                 .then((res) => {
                     console.log(res);
-                    alert("User registered successfully");
+                    setUserId(res)
+                    // alert("User registered successfully");
                     setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);
@@ -55,10 +57,12 @@ function Login() {
                 email: email,
                 password: password
             }
-            loginUser(user)
+            loginUser(user, setUserId)
                 .then((res) => {
                     console.log(res);
-                    alert("User logged in successfully");
+                    setUserId(res)
+                    console.log("new user id" + res)
+                    // alert("User logged in successfully");
                     setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);

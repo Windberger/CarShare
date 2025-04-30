@@ -45,13 +45,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) ->
                         auth.requestMatchers(HttpMethod.GET, "public_resource").permitAll()
                                 .requestMatchers("/login", "/signup").permitAll()
+                                .requestMatchers("/routes/**").permitAll()      // Wieder entfernen !!!! nur zum testen
+
                                 .anyRequest().authenticated()
 
                 )
                 .sessionManagement(s -> s
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-                //.cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())
         ;
 
         return http.build();

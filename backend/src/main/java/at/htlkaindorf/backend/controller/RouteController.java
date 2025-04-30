@@ -1,6 +1,5 @@
 package at.htlkaindorf.backend.controller;
 
-import at.htlkaindorf.backend.dto.CreateRouteDTO;
 import at.htlkaindorf.backend.dto.RouteDTO;
 import at.htlkaindorf.backend.service.RouteService;
 import lombok.RequiredArgsConstructor;
@@ -44,12 +43,12 @@ public class RouteController {
 
     @PostMapping("/createRoute")
     public ResponseEntity<RouteDTO> createRoute(
-            @RequestBody CreateRouteDTO routeDTO
+            @RequestBody RouteDTO routeDTO
     ) {
         Optional<RouteDTO> createdRoute = routeService.createRoute(routeDTO);
 
         if(createdRoute.isPresent()) {
-            return new ResponseEntity<>(createdRoute.get(), HttpStatus.CREATED);
+            return new ResponseEntity<>(routeDTO, HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
