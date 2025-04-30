@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 public class RouteController {
 
-    private  final RouteService routeService;
+    private final RouteService routeService;
 
 
     @GetMapping("/driverRoutes")
