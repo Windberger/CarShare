@@ -8,6 +8,8 @@ export const registerUser = async (userData: RegisterUser, setUserId: (id: numbe
                 'Content-Type': 'application/json',
             },
         });
+
+
         console.log(response.data.userId);
 
         setUserId(response.data.userId);
@@ -25,7 +27,7 @@ export const loginUser = async (userData: LoginUser, setUserId: (id: number | nu
                 'Content-Type': 'application/json',
             },
         });
-        console.log(response.data.userId);
+        console.log("logging in user")
 
         setUserId(response.data.userId);
 

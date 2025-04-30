@@ -44,7 +44,8 @@ function Login() {
             registerUser(user, setUserId)
                 .then((res) => {
                     console.log(res);
-                    alert("User registered successfully");
+                    setUserId(res)
+                    // alert("User registered successfully");
                     setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);
@@ -59,7 +60,9 @@ function Login() {
             loginUser(user, setUserId)
                 .then((res) => {
                     console.log(res);
-                    alert("User logged in successfully");
+                    setUserId(res)
+                    console.log("new user id" + res)
+                    // alert("User logged in successfully");
                     setLoginSuccessful(true);
                 }).catch((err) => {
                 console.log(err);

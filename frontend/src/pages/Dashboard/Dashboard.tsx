@@ -29,6 +29,7 @@ function Dashboard(props) {
         getRoutes(userId)
             .then((routes) => {
                 setDriverRoutes(routes);
+                console.log(routes)
             })
             .catch((error) => {
                 console.error("Error fetching driver routes:", error);
@@ -38,6 +39,7 @@ function Dashboard(props) {
         getJoinedRoutes(userId)
             .then((routes) => {
                 setJoinRoutes(routes);
+                console.log(routes)
             })
             .catch((error) => {
                 console.error("Error fetching joined routes:", error);
