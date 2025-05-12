@@ -38,7 +38,7 @@ public class RouteService {
         return routeRepository.getJoinedRoutes(userId).stream().map(routeMapper::toDto).collect(Collectors.toList());
     }
 
-    public Optional<RouteDTO> createRoute(CreateRouteDTO createRouteDTO) {
+    public Optional<RouteDTO> createRoute(RouteDTO routeDTO) {
 //        try {
 //            Optional<Address> startAddress = addressRepository.findById(createRouteDTO.getStartAddressId());
 //            Optional<Address> endAddress = addressRepository.findById(createRouteDTO.getEndAddressId());
@@ -62,9 +62,9 @@ public class RouteService {
         return Optional.of(new RouteDTO(1L,
                 new AddressDetailDTO(1L, 123, "Test Street", "1234", "Test City"),
                 new AddressDetailDTO(2L, 123, "Another Street", "5678", "Another City"),
-                createRouteDTO.getStartTime(),
+                routeDTO.getStartTime(),
                 new UserAccountDTO(1L, "testuser", "password", "234"),
-                createRouteDTO.getJoinCode()
+                routeDTO.getJoinCode()
         ));
     }
 }
