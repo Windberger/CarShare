@@ -4,8 +4,12 @@ import at.htlkaindorf.backend.dto.AddressDetailDTO;
 import at.htlkaindorf.backend.dto.CreateRouteDTO;
 import at.htlkaindorf.backend.dto.RouteDTO;
 import at.htlkaindorf.backend.dto.UserAccountDTO;
+import at.htlkaindorf.backend.exception.LoginException;
+import at.htlkaindorf.backend.exception.ResourceNotFoundException;
+import at.htlkaindorf.backend.exception.RouteException;
 import at.htlkaindorf.backend.mapper.AddressMapper;
 import at.htlkaindorf.backend.mapper.RouteMapper;
+import at.htlkaindorf.backend.mapper.UserAccountMapper;
 import at.htlkaindorf.backend.pojos.Address;
 import at.htlkaindorf.backend.pojos.Route;
 import at.htlkaindorf.backend.pojos.UserAccount;
@@ -16,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.Charset;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +35,8 @@ public class RouteService {
     private final UserAccountRepository userAccountRepository;
     private final RouteMapper routeMapper;
     private final AddressMapper addressMapper;
+    private final UserAccountMapper userAccountMapper;
+    private final Random random = new Random();
 
     public Iterable<RouteDTO> getAllDriverRoutes(Long userId) {
         return routeRepository.getDriverRoutes(userId).stream().map(routeMapper::toDto).collect(Collectors.toList());
@@ -38,33 +46,58 @@ public class RouteService {
         return routeRepository.getJoinedRoutes(userId).stream().map(routeMapper::toDto).collect(Collectors.toList());
     }
 
-    public Optional<RouteDTO> createRoute(CreateRouteDTO createRouteDTO) {
-//        try {
-//            Optional<Address> startAddress = addressRepository.findById(createRouteDTO.getStartAddressId());
-//            Optional<Address> endAddress = addressRepository.findById(createRouteDTO.getEndAddressId());
-//            Optional<UserAccount> driver = userAccountRepository.findById(createRouteDTO.getDriverId());
-//
-//            if(startAddress.isPresent() && endAddress.isPresent() && driver.isPresent()) {
-//                RouteDTO routeDTO = new RouteDTO(
-//                        createRouteDTO.getRouteId(),
-//                        addressMapper.toDto()
-//                        endAddress.get(),
-//                        createRouteDTO.getStartTime(),
-//                        driver.get(),
-//                        createRouteDTO.getJoinCode()
-//                );
-//            }
-//
-//            route = repository.save(route);
-//        } catch (Exception e) {
-//            log.info("Error creating Route: " + e);
-//        }
-        return Optional.of(new RouteDTO(1L,
-                new AddressDetailDTO(1L, 123, "Test Street", "1234", "Test City"),
-                new AddressDetailDTO(2L, 123, "Another Street", "5678", "Another City"),
-                createRouteDTO.getStartTime(),
-                new UserAccountDTO(1L, "testuser", "password", "234"),
-                createRouteDTO.getJoinCode()
-        ));
+    public Long createRoute(CreateRouteDTO createRouteDTO) {
+
+        Optional<Address> startAddress = addressRepository.findById(createRouteDTO.getStartAddressId());
+        Optional<Address> endAddress = addressRepository.findById(createRouteDTO.getEndAddressId());
+        Optional<UserAccount> driver = userAccountRepository.findById(createRouteDTO.getDriverId());
+
+        StringBuilder joinCodeBuilder = new StringBuilder();
+        String joinCode;
+
+        int count = 0;
+        do {
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+            for (int i = 0; i < 8; i++) {
+                joinCodeBuilder.append(characters.charAt(random.nextInt(characters.length())));
+            }
+
+            joinCode = joinCodeBuilder.toString();
+            joinCodeBuilder.setLength(0);
+
+            if (count == 10) {
+                throw new RouteException("Error while creating route");
+            }
+            count++;
+        } while (routeRepository.existsByJoinCode(joinCode));
+
+        if (startAddress.isPresent() && endAddress.isPresent() && driver.isPresent()) {
+            RouteDTO routeDTO = new RouteDTO(
+                    null,
+                    addressMapper.toDto(startAddress.get()),
+                    addressMapper.toDto(endAddress.get()),
+                    createRouteDTO.getStartTime(),
+                    userAccountMapper.toDto(driver.get()),
+                    joinCode
+            );
+
+            routeRepository.save(routeMapper.toEntity(routeDTO));
+            return routeRepository.findByJoinCode(joinCode).getRouteId();
+        } else {
+            throw new ResourceNotFoundException("Route could not be created, because one of the following was not found: " +
+                    "Start Address: " + startAddress.isPresent() +
+                    ", End Address: " + endAddress.isPresent() +
+                    ", Driver: " + driver.isPresent());
+        }
+    }
+
+    public RouteDTO getRouteByJoinCode(String joinCode) {
+        Optional<Route> route = Optional.of(routeRepository.findByJoinCode(joinCode));
+        if(!route.isPresent()) {
+            throw new ResourceNotFoundException("Route with join code " + joinCode + " was not found");
+        }
+
+        return routeMapper.toDto(route.get());
     }
 }

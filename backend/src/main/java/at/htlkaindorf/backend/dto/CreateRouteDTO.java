@@ -10,10 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateRouteDTO {
-    private Long routeId;
     private Long startAddressId;
     private Long endAddressId;
     private LocalDateTime startTime;
     private Long driverId;
-    private String joinCode;
 }

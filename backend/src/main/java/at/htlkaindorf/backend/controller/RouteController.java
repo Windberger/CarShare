@@ -1,5 +1,6 @@
 package at.htlkaindorf.backend.controller;
 
+import at.htlkaindorf.backend.dto.CreateRouteDTO;
 import at.htlkaindorf.backend.dto.RouteDTO;
 import at.htlkaindorf.backend.service.RouteService;
 import lombok.RequiredArgsConstructor;
@@ -24,33 +25,32 @@ public class RouteController {
 
     private final RouteService routeService;
 
-
     @GetMapping("/driverRoutes")
     public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
             @RequestParam Long userId
     ) {
         return ResponseEntity.ok(routeService.getAllDriverRoutes(userId));
-
     }
 
     @GetMapping("/joinedRoutes")
     public ResponseEntity<Iterable<RouteDTO>> getAllJoinedRoutes(
             @RequestParam Long userId
     ) {
-
         return ResponseEntity.ok(routeService.getAllJoinedRoutes(userId));
     }
 
-    @PostMapping("/createRoute")
-    public ResponseEntity<RouteDTO> createRoute(
-            @RequestBody RouteDTO routeDTO
+    @GetMapping("/joinCode")
+    public ResponseEntity<RouteDTO> getRouteByJoinCode(
+            @RequestParam String joinCode
     ) {
-        Optional<RouteDTO> createdRoute = routeService.createRoute(routeDTO);
+        return ResponseEntity.ok(routeService.getRouteByJoinCode(joinCode));
+    }
 
-        if(createdRoute.isPresent()) {
-            return new ResponseEntity<>(routeDTO, HttpStatus.CREATED);
-        }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    @PostMapping("/createRoute")
+    public ResponseEntity<Long> createRoute(
+            @RequestBody CreateRouteDTO routeDTO
+    ) {
+        return ResponseEntity.ok(routeService.createRoute(routeDTO));
     }
 
 

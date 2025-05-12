@@ -37,23 +37,19 @@ public class AuthenticationController {
 
         Long userId = userAccountService.loginUser(loginRequest, request);
 
-        if(userId != null) {
-            return new ResponseEntity<>(userId, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        return ResponseEntity.ok(userId);
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequestDTO signupRequest, HttpServletRequest request) {
 
         if (userAccountService.existsByEmail(signupRequest.getEmail())) {
-            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already used");
         }
 
-        userAccountService.saveUser(signupRequest);
+        Long userId = userAccountService.saveUser(signupRequest);
 
-        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
+        return ResponseEntity.ok(userId);
     }
 
     @PostMapping("/logout")
@@ -61,11 +57,6 @@ public class AuthenticationController {
         userAccountService.logoutUser(request, response, authentication);
 
         return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
-    }
-
-    @GetMapping("/protected")
-    public ResponseEntity<?> protectedEndpoint() {
-        return new ResponseEntity<>("Protected endpoint", HttpStatus.OK);
     }
 }
 
