@@ -15,4 +15,8 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 
     @Query("SELECT r FROM Route r INNER JOIN r.routeMembers m WHERE m.member.userId = :userId")
     public List<Route> getJoinedRoutes(Long userId);
+
+    public boolean existsByJoinCode(String joinCode);
+
+    public Route findByJoinCode(String joinCode);
 }

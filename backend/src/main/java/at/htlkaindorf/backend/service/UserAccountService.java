@@ -2,6 +2,8 @@ package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.dto.LoginRequestDTO;
 import at.htlkaindorf.backend.dto.SignupRequestDTO;
+import at.htlkaindorf.backend.exception.LoginException;
+import at.htlkaindorf.backend.exception.UserCreationException;
 import at.htlkaindorf.backend.pojos.UserAccount;
 import at.htlkaindorf.backend.repositories.UserAccountRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,21 +42,25 @@ public class UserAccountService {
     private final AuthenticationManager authenticationManager;
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
-
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    public void saveUser(SignupRequestDTO signupRequest) {
-        UserAccount user = new UserAccount();
-        user.setFirstname(signupRequest.getFirstname());
-        user.setLastname(signupRequest.getLastname());
-        user.setEmail(signupRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+    public Long saveUser(SignupRequestDTO signupRequest) {
+        try {
+            UserAccount user = new UserAccount();
+            user.setFirstname(signupRequest.getFirstname());
+            user.setLastname(signupRequest.getLastname());
+            user.setEmail(signupRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
-        userRepository.save(user);
+            userRepository.save(user);
+
+            return user.getUserId();
+        } catch (Exception e) {
+            throw new UserCreationException("Error creating user: " + e.getMessage());
+        }
     }
-
 
     public Long loginUser(LoginRequestDTO loginRequest, HttpServletRequest request) {
         try {
@@ -70,23 +76,25 @@ public class UserAccountService {
             Optional<UserAccount> user = userRepository.findByEmail(loginRequest.getEmail());
 
 
-            if(user.isPresent()) {
+            if (user.isPresent()) {
                 return user.get().getUserId();
             }
-            return null;
+            throw new LoginException("User not found");
         } catch (Exception e) {
-            return null;
+            throw new LoginException(e.getMessage());
         }
     }
 
-    public boolean logoutUser(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        logoutHandler.logout(request, response, authentication);
+    public void logoutUser(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        try {
+            logoutHandler.logout(request, response, authentication);
 
-        request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
-        request.getSession().invalidate();
-        SecurityContextHolder.clearContext();
-
-        return true;
+            request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+            request.getSession().invalidate();
+            SecurityContextHolder.clearContext();
+        } catch (Exception e) {
+            throw new LoginException("Error logging out: " + e.getMessage());
+        }
     }
 
 }
