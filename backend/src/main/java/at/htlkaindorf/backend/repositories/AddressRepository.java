@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
     @Query("SELECT a FROM Address a WHERE a.country = :country AND a.postalCode = :postalCode AND a.city = :city AND a.street = :street AND a.houseNumber = :houseNumber")
-    Optional<Address> findByDetails(String country, Integer postalCode, String city, String street, String houseNumber);
+    Optional<Address> findByDetails(String country, String postalCode, String city, String street, String houseNumber);
 
 }

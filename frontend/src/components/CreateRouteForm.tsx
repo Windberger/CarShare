@@ -50,7 +50,6 @@ function CreateRouteForm() {
         if (!selected) return;
 
         const countryCode = selected.value;
-        const countryName = selected.label;
 
         if (type === "start") {
             setStartCountry(selected);
@@ -60,7 +59,7 @@ function CreateRouteForm() {
             setDestinationAddress(prev => ({...prev, country: countryCode}));
         }
 
-        console.log("Selected country code:", countryCode);
+        console.log(startAddress)
     };
 
     const renderAddressFields = (type: 'start' | 'destination', address: typeof startAddress) => (

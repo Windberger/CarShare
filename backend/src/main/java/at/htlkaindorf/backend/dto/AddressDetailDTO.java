@@ -11,7 +11,7 @@ public class AddressDetailDTO {
 
     private Long addressId;
     private String country;
-    private Integer postalCode;
+    private String postalCode;
     private String city;
     private String street;
     private String houseNumber;

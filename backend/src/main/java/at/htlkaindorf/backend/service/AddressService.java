@@ -2,6 +2,7 @@ package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.dto.AddressDetailDTO;
 import at.htlkaindorf.backend.dto.CreateAddressDTO;
+import at.htlkaindorf.backend.exception.InvalidAddressException;
 import at.htlkaindorf.backend.mapper.AddressMapper;
 import at.htlkaindorf.backend.mapper.CreateAddressMapper;
 import at.htlkaindorf.backend.pojos.Address;
@@ -23,7 +24,7 @@ public class AddressService {
     public Long addAddress(CreateAddressDTO addressDTO) {
 
         if (!addressValidationService.isValidAddress(addressDTO)) {
-            throw new IllegalArgumentException("Ungültige Adresse");
+            throw new InvalidAddressException("Invalid address");
         }
 
         Address address = createAddressMapper.toEntity(addressDTO);
