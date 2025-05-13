@@ -2,6 +2,7 @@ package at.htlkaindorf.backend.controller;
 
 import at.htlkaindorf.backend.dto.CreateRouteDTO;
 import at.htlkaindorf.backend.dto.RouteDTO;
+import at.htlkaindorf.backend.dto.RouteDetailDTO;
 import at.htlkaindorf.backend.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,5 +54,10 @@ public class RouteController {
         return ResponseEntity.ok(routeService.createRoute(routeDTO));
     }
 
+    @GetMapping("/getRoute")
+    public ResponseEntity<RouteDetailDTO> getRouteById(@RequestParam Long id){
 
+        return ResponseEntity.ok(routeService.getRouteById(id));
+
+    }
 }

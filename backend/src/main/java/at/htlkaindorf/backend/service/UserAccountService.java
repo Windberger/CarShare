@@ -2,8 +2,10 @@ package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.dto.LoginRequestDTO;
 import at.htlkaindorf.backend.dto.SignupRequestDTO;
+import at.htlkaindorf.backend.dto.UserAccountDTO;
 import at.htlkaindorf.backend.exception.LoginException;
 import at.htlkaindorf.backend.exception.UserCreationException;
+import at.htlkaindorf.backend.mapper.UserAccountMapper;
 import at.htlkaindorf.backend.pojos.UserAccount;
 import at.htlkaindorf.backend.repositories.UserAccountRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +43,7 @@ public class UserAccountService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+    private final UserAccountMapper userAccountMapper;
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
@@ -95,6 +98,25 @@ public class UserAccountService {
         } catch (Exception e) {
             throw new LoginException("Error logging out: " + e.getMessage());
         }
+    }
+    
+    
+    /**
+     * @author Johanna Hechtl
+     * @since 12.05.2025
+     */
+    
+
+    public UserAccountDTO getUserById(Long userId) {
+        Optional<UserAccount> userAccount = userRepository.findById(userId);
+
+        if (userAccount.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        return userAccountMapper.toDto(userAccount.get());
+
+
     }
 
 }

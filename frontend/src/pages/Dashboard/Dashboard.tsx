@@ -6,6 +6,7 @@ import {Link} from "react-router-dom";
 import {IRoute} from "../../model/IRoute.ts";
 import {UserContext} from "../../context/UserContext.tsx";
 import {getJoinedRoutes, getRoutes} from "../../services/RouteService.ts";
+import {RouteContext} from "../../context/RouteContext.tsx";
 
 /**
  * @author Johanna Hechtl
@@ -18,41 +19,43 @@ interface DashboardProps {
     title: unknown
 }
 
-
 function Dashboard(props) {
     const [driverRoutes, setDriverRoutes] = useState<IRoute[]>([]);
     const [joinRoutes, setJoinRoutes] = useState<IRoute[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [joinCode, setJoinCode] = useState("");
     const {userId} = useContext(UserContext)!;
+    const {setRecentRoutes, setJoinedRoutes} = useContext(RouteContext)!;
 
 
     const getRoutesForCards = (userId: number | null) => {
         getRoutes(userId)
             .then((routes) => {
                 setDriverRoutes(routes);
-                console.log(routes)
+                setRecentRoutes(routes);
             })
             .catch((error) => {
                 console.error("Error fetching driver routes:", error);
-                alert("An error occurred while fetching driver routes. Please try again later.");
             });
 
         getJoinedRoutes(userId)
             .then((routes) => {
                 setJoinRoutes(routes);
-                console.log(routes)
+                setJoinedRoutes(routes);
             })
             .catch((error) => {
                 console.error("Error fetching joined routes:", error);
-                alert("An error occurred while fetching joined routes. Please try again later.");
             });
     };
 
+    const handleJoinCarpool = () => {
+        console.log("Join Code:", joinCode);
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         getRoutesForCards(userId);
-
     }, []);
-
 
     return (
         <div className={"bg-white min-h-screen w-screen"}>
@@ -64,19 +67,48 @@ function Dashboard(props) {
                 >
                     <IoMdAdd/> Add Route
                 </Link>
-                <Link to={"/"} className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow"
+                >
                     Join Carpool
-                </Link>
+                </button>
             </div>
-
 
             <div className="grid grid-cols-2 gap-6">
                 <RoutesCard title={"Recent Routes"} routes={driverRoutes}></RoutesCard>
                 <RoutesCard title={"Recent Joined Routes"} routes={joinRoutes}></RoutesCard>
-
             </div>
-        </div>
 
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-lg text-black font-bold mb-4">Enter Join Code</h2>
+                        <input
+                            type="text"
+                            value={joinCode}
+                            onChange={(e) => setJoinCode(e.target.value)}
+                            className="border p-2 w-full mb-4"
+                            placeholder="Enter join code"
+                        />
+                        <div className="flex justify-between">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 bg-gray-300 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleJoinCarpool}
+                                className="px-4 py-2 bg-[#194569] text-white rounded-lg"
+                            >
+                                Join
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
     );
 }
 

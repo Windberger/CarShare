@@ -1,13 +1,11 @@
 package at.htlkaindorf.backend.service;
 
-import at.htlkaindorf.backend.dto.AddressDetailDTO;
-import at.htlkaindorf.backend.dto.CreateRouteDTO;
-import at.htlkaindorf.backend.dto.RouteDTO;
-import at.htlkaindorf.backend.dto.UserAccountDTO;
+import at.htlkaindorf.backend.dto.*;
 import at.htlkaindorf.backend.exception.LoginException;
 import at.htlkaindorf.backend.exception.ResourceNotFoundException;
 import at.htlkaindorf.backend.exception.RouteException;
 import at.htlkaindorf.backend.mapper.AddressMapper;
+import at.htlkaindorf.backend.mapper.RouteDetailMapper;
 import at.htlkaindorf.backend.mapper.RouteMapper;
 import at.htlkaindorf.backend.mapper.UserAccountMapper;
 import at.htlkaindorf.backend.pojos.Address;
@@ -36,6 +34,7 @@ public class RouteService {
     private final RouteMapper routeMapper;
     private final AddressMapper addressMapper;
     private final UserAccountMapper userAccountMapper;
+    private final RouteDetailMapper routeDetailMapper;
     private final Random random = new Random();
 
     public Iterable<RouteDTO> getAllDriverRoutes(Long userId) {
@@ -92,12 +91,33 @@ public class RouteService {
         }
     }
 
+
     public RouteDTO getRouteByJoinCode(String joinCode) {
         Optional<Route> route = Optional.of(routeRepository.findByJoinCode(joinCode));
-        if(!route.isPresent()) {
+        if (!route.isPresent()) {
             throw new ResourceNotFoundException("Route with join code " + joinCode + " was not found");
         }
 
         return routeMapper.toDto(route.get());
+    }
+
+    /**
+     * @author Johanna Hechtl
+     * @since 13.05.2025
+     * sucht Routen die man für die Detailansicht einer Route braucht
+     * Dashboard --> click auf eine Route --> Detailansicht
+     */
+
+
+    public RouteDetailDTO getRouteById(Long id) {
+
+        Optional<Route> route = routeRepository.findById(id);
+
+        if (route.isEmpty()) {
+            throw new ResourceNotFoundException("Route with id " + id + " was not found");
+
+        }
+
+        return routeDetailMapper.toDto(route.get());
     }
 }
