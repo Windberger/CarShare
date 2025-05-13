@@ -1,6 +1,5 @@
-package at.htlkaindorf.backend.pojos;
+package at.htlkaindorf.backend.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,19 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long addressId;
+public class CreateAddressDTO {
 
     private String country;
-
     private Integer postalCode;
-
     private String city;
-
     private String street;
-
     private String houseNumber;
+
 }
