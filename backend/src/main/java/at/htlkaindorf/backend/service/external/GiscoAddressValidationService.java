@@ -51,6 +51,7 @@ public class GiscoAddressValidationService {
                 .build()
                 .toUri();
 
+        log.info(uri.toString());
         ResponseEntity<Map> response = restTemplate.getForEntity(uri, Map.class);
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {

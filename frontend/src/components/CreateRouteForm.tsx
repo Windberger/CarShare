@@ -2,7 +2,8 @@ import React, {useMemo, useState} from 'react';
 import Navbar from "./Navbar.tsx";
 import Select, {SingleValue} from 'react-select'
 import countryList from "react-select-country-list";
-import {options} from "axios";
+import {CreateAddress} from "../interfaces/AddressInterfaces.ts";
+import {createAddress} from "../services/AddressService.ts";
 
 type CountryOption = {
     label: string;
@@ -10,17 +11,17 @@ type CountryOption = {
 };
 
 function CreateRouteForm() {
-    const [startAddress, setStartAddress] = useState({
+    const [startAddress, setStartAddress] = useState<CreateAddress>({
         country: '',
-        zip: '',
+        postalCode: '',
         city: '',
         street: '',
         houseNumber: ''
     });
 
-    const [destinationAddress, setDestinationAddress] = useState({
+    const [destinationAddress, setDestinationAddress] = useState<CreateAddress>({
         country: '',
-        zip: '',
+        postalCode: '',
         city: '',
         street: '',
         houseNumber: ''
@@ -33,6 +34,21 @@ function CreateRouteForm() {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
+
+        createAddress(startAddress).then((data) => {
+            console.log(data)
+            }).catch((error) => {
+            console.log(error)
+        });
+
+        createAddress(startAddress).then((data) => {
+            console.log(data)
+        }).catch((error) => {
+            if(error.status == 400){
+                alert("Address does not exist!")
+            }
+        })
+
         console.log('Start Address:', startAddress);
         console.log('Destination Address:', destinationAddress);
     };
@@ -81,8 +97,8 @@ function CreateRouteForm() {
                     <label className="block text-gray-700 font-medium mb-1">Postal Code</label>
                     <input
                         type="text"
-                        name="zip"
-                        value={address.zip}
+                        name="postalCode"
+                        value={address.postalCode}
                         onChange={(e) => handleChange(e, type)}
                         className="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#194569]"
                         required
