@@ -1,6 +1,7 @@
 package at.htlkaindorf.backend.service;
 
 import at.htlkaindorf.backend.dto.*;
+import at.htlkaindorf.backend.exception.DuplicateEntryException;
 import at.htlkaindorf.backend.exception.LoginException;
 import at.htlkaindorf.backend.exception.ResourceNotFoundException;
 import at.htlkaindorf.backend.exception.RouteException;
@@ -45,6 +46,13 @@ public class RouteService {
         return routeRepository.getJoinedRoutes(userId).stream().map(routeMapper::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * This method creates a new Route with a unique Join Code
+     * @author Mario Windberger
+     * @since 30.05.2025
+     * @param createRouteDTO
+     * @return routeId
+     */
     public Long createRoute(CreateRouteDTO createRouteDTO) {
 
         Optional<Address> startAddress = addressRepository.findById(createRouteDTO.getStartAddressId());
@@ -81,7 +89,11 @@ public class RouteService {
                     joinCode
             );
 
-            routeRepository.save(routeMapper.toEntity(routeDTO));
+            try {
+                routeRepository.save(routeMapper.toEntity(routeDTO));
+            } catch (Exception e) {
+                throw new DuplicateEntryException("This Route already exists");
+            }
             return routeRepository.findByJoinCode(joinCode).getRouteId();
         } else {
             throw new ResourceNotFoundException("Route could not be created, because one of the following was not found: " +
@@ -93,12 +105,13 @@ public class RouteService {
 
 
     public RouteDTO getRouteByJoinCode(String joinCode) {
-        Optional<Route> route = Optional.of(routeRepository.findByJoinCode(joinCode));
-        if (!route.isPresent()) {
+        try {
+            Route route = routeRepository.findByJoinCode(joinCode);
+            log.info(route.getRouteId().toString());
+            return routeMapper.toDto(route);
+        } catch (Exception e) {
             throw new ResourceNotFoundException("Route with join code " + joinCode + " was not found");
         }
-
-        return routeMapper.toDto(route.get());
     }
 
     /**
@@ -107,8 +120,6 @@ public class RouteService {
      * sucht Routen die man für die Detailansicht einer Route braucht
      * Dashboard --> click auf eine Route --> Detailansicht
      */
-
-
     public RouteDetailDTO getRouteById(Long id) {
 
         Optional<Route> route = routeRepository.findById(id);

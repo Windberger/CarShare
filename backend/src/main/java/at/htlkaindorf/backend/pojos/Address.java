@@ -9,6 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(
+        name = "address",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uc_address_unique_combination",
+                columnNames = {"country", "postal_code", "city", "street", "house_number"}
+        )
+)
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

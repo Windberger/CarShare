@@ -36,9 +36,12 @@ public class GiscoAddressValidationService {
                 "LU", "HU", "MT", "NL", "AT", "PL", "PT", "RO", "SI", "SK", "FI", "SE", "IS", "LI", "NO", "CH"
         );
 
-        if (Arrays.stream(countryCodes).noneMatch(code -> code.equalsIgnoreCase(dto.getCountry().trim()))
-            || !euCountryCodes.contains(dto.getCountry().trim().toUpperCase())) {
+        if (Arrays.stream(countryCodes).noneMatch(code -> code.equalsIgnoreCase(dto.getCountry().trim()))) {
             return false;
+        }
+
+        if(!euCountryCodes.contains(dto.getCountry().trim().toUpperCase())){
+            return true;
         }
 
         URI baseUrl = URI.create("https://gisco-services.ec.europa.eu/addressapi/search");

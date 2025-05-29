@@ -5,7 +5,7 @@ import {IoMdAdd} from "react-icons/io";
 import {Link} from "react-router-dom";
 import {IRoute} from "../../model/IRoute.ts";
 import {UserContext} from "../../context/UserContext.tsx";
-import {getJoinedRoutes, getRoutes} from "../../services/RouteService.ts";
+import {getJoinedRoutes, getRouteByJoinCode, getRoutes} from "../../services/RouteService.ts";
 import {RouteContext} from "../../context/RouteContext.tsx";
 
 /**
@@ -24,11 +24,22 @@ function Dashboard(props) {
     const [joinRoutes, setJoinRoutes] = useState<IRoute[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [joinCode, setJoinCode] = useState("");
-    const {userId} = useContext(UserContext)!;
-    const {setRecentRoutes, setJoinedRoutes} = useContext(RouteContext)!;
+
+    const userContext = useContext(UserContext);
+    const routeContext = useContext(RouteContext);
+    if(!userContext || !routeContext) {
+        throw new Error("Context not found");
+    }
+    const {userId} = userContext;
+    const {setRecentRoutes, setJoinedRoutes} = routeContext;
 
 
     const getRoutesForCards = (userId: number | null) => {
+
+        if(userId == null) {
+            console.error("User ID is null!");
+        }
+
         getRoutes(userId)
             .then((routes) => {
                 setDriverRoutes(routes);
@@ -49,7 +60,19 @@ function Dashboard(props) {
     };
 
     const handleJoinCarpool = () => {
-        console.log("Join Code:", joinCode);
+        getRouteByJoinCode(joinCode)
+            .then((route) => {
+                //TODO: Continue to join route page
+                console.log(route);
+            })
+            .catch((error) => {
+                if(error.status == 404) {
+                    alert("A route with this code does not exist!");
+                } else {
+                    alert("An unknown error occurred!");
+                }
+            })
+
         setIsModalOpen(false);
     };
 
@@ -59,7 +82,7 @@ function Dashboard(props) {
 
     return (
         <div className={"bg-white min-h-screen w-screen"}>
-            <Navbar/>
+            <Navbar previousPage={null}/>
             <div className="flex gap-4 mb-6 m-4">
                 <Link
                     to="/createCarpool"

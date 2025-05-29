@@ -13,6 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(
+        name = "route",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uc_route_unique_combination",
+                columnNames = {"driver", "start_address", "end_address", "start_time"}
+        )
+)
 public class Route {
 
     @Id

@@ -10,9 +10,6 @@ import { UserContext } from "../../context/UserContext.tsx";
  * @author Johanna Hechtl
  * @since 03.03.2025
  */
-
-
-
 function Login() {
     const [register, setRegister] = useState(false);
     const [password, setPassword] = useState("");
@@ -21,7 +18,6 @@ function Login() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [isPasswordValid, setIsPasswordValid] = useState(false);
-    const [loginSuccessful, setLoginSuccessful] = useState(false);
     const navigate = useNavigate();
     const { setUserId } =  useContext(UserContext)!;
 
@@ -43,36 +39,31 @@ function Login() {
 
             registerUser(user, setUserId)
                 .then((res) => {
-                    console.log(res);
                     setUserId(res)
-                    // alert("User registered successfully");
-                    setLoginSuccessful(true);
+                    login(email, password, setUserId)
                 }).catch((err) => {
                 console.log(err);
                 alert("User registration failed");
             });
 
         } else {
-            const user: LoginUser = {
-                email: email,
-                password: password
-            }
-            loginUser(user, setUserId)
-                .then((res) => {
-                    console.log(res);
-                    setUserId(res)
-                    console.log("new user id" + res)
-                    // alert("User logged in successfully");
-                    setLoginSuccessful(true);
-                }).catch((err) => {
-                console.log(err);
-                alert("User login failed");
-            });
+            login(email, password, setUserId)
         }
+    }
 
-        if (loginSuccessful) {
-            navigate("/dashboard");
+    const login = (email: string, password: string, setUserId: (id: number | null) => void) => {
+        const user: LoginUser = {
+            email: email,
+            password: password
         }
+        loginUser(user, setUserId)
+            .then((res) => {
+                setUserId(res)
+                navigate("/dashboard");
+            }).catch((err) => {
+            console.log(err);
+            alert("User login failed");
+        });
     }
 
 

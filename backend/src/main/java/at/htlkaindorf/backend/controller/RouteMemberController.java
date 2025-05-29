@@ -1,5 +1,6 @@
 package at.htlkaindorf.backend.controller;
 
+import at.htlkaindorf.backend.dto.CreateAddressDTO;
 import at.htlkaindorf.backend.dto.RouteMemberDTO;
 import at.htlkaindorf.backend.mapper.RouteMapper;
 import at.htlkaindorf.backend.mapper.UserAccountMapper;
@@ -27,25 +28,16 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class RouteMemberController {
 
-    private final RouteService routeService;
     private final RouteMemberService routeMemberService;
-    private final RouteMapper routeMapper;
-    private final UserAccountMapper userAccountMapper;
-    private final UserAccountService userAccountService;
 
-
-
-    // TODO: nochmal überprüfen wegen Adresse
     @PostMapping("/addRouteMember")
-    public ResponseEntity<?> addRouteMember(@RequestParam String joinCode,
-                                            @RequestParam Long userId,
-                                            @RequestParam Address startAddress,
-                                            @RequestParam Address endAddress
+    public ResponseEntity<?> addRouteMember(
+            @RequestParam String joinCode,
+            @RequestParam Long userId,
+            @RequestParam CreateAddressDTO startAddress,
+            @RequestParam CreateAddressDTO endAddress
     ) {
-        Route route = routeMapper.toEntity(routeService.getRouteByJoinCode(joinCode));
-        UserAccount userAccount = userAccountMapper.toEntity(userAccountService.getUserById(userId));
-
-        RouteMemberDTO routeMemberDTO = routeMemberService.addRouteMember(route, userAccount, startAddress, endAddress);
+        RouteMemberDTO routeMemberDTO = routeMemberService.addRouteMember(joinCode, userId, startAddress, endAddress);
         return ResponseEntity.ok(routeMemberDTO);
     }
 }

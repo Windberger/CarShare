@@ -64,6 +64,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DuplicateEntryException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEntryException(
+            DuplicateEntryException ex
+    ) {
+        ErrorResponse error = ErrorResponse.builder(ex, HttpStatus.FORBIDDEN, ex.getMessage()).build();
+
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(
             Exception ex
