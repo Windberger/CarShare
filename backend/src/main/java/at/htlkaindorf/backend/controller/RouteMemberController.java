@@ -1,5 +1,6 @@
 package at.htlkaindorf.backend.controller;
 
+import at.htlkaindorf.backend.dto.AddRouteMemberDTO;
 import at.htlkaindorf.backend.dto.CreateAddressDTO;
 import at.htlkaindorf.backend.dto.RouteMemberDTO;
 import at.htlkaindorf.backend.mapper.RouteMapper;
@@ -11,6 +12,7 @@ import at.htlkaindorf.backend.service.RouteMemberService;
 import at.htlkaindorf.backend.service.RouteService;
 import at.htlkaindorf.backend.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/routemembers")
+@RequestMapping("/routeMembers")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class RouteMemberController {
@@ -32,12 +34,14 @@ public class RouteMemberController {
 
     @PostMapping("/addRouteMember")
     public ResponseEntity<?> addRouteMember(
-            @RequestParam String joinCode,
-            @RequestParam Long userId,
-            @RequestParam CreateAddressDTO startAddress,
-            @RequestParam CreateAddressDTO endAddress
+            @RequestBody AddRouteMemberDTO dto
     ) {
-        RouteMemberDTO routeMemberDTO = routeMemberService.addRouteMember(joinCode, userId, startAddress, endAddress);
-        return ResponseEntity.ok(routeMemberDTO);
+        routeMemberService.addRouteMember(
+                dto.getJoinCode(),
+                dto.getUserId(),
+                dto.getStartAddress(),
+                dto.getEndAddress()
+        );
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

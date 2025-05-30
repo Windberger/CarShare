@@ -47,4 +47,15 @@ export const getRouteByJoinCode = async (joinCode: string) => {
     return response.data;
 };
 
+export const routeExists = async (joinCode: string) => {
+    const response = await apiClient.get(`/routes/routeExists?joinCode=${joinCode}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+
+    return response.data;
+};
+
 

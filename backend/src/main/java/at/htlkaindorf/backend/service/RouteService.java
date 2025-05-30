@@ -131,4 +131,13 @@ public class RouteService {
 
         return routeDetailMapper.toDto(route.get());
     }
+
+    public Boolean routeExisting(String joinCode) {
+        try {
+            Route route = routeRepository.findByJoinCode(joinCode);
+            return route != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

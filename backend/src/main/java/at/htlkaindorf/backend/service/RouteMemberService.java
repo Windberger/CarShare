@@ -28,7 +28,6 @@ import java.util.Optional;
 public class RouteMemberService {
 
     private final RouteMemberRepository routeMemberRepository;
-    private final RouteMemberMapper routeMemberMapper;
     private final RouteMapper routeMapper;
     private final RouteService routeService;
     private final UserAccountMapper userAccountMapper;
@@ -36,11 +35,14 @@ public class RouteMemberService {
     private final AddressService addressService;
     private final AddressRepository addressRepository;
 
-    //TODO: Methode ist noch nicht ganz fertig
-    public RouteMemberDTO addRouteMember(String joinCode, Long userId, CreateAddressDTO createStartAddress, CreateAddressDTO createEndAddress) {
+    public void addRouteMember(String joinCode, Long userId, CreateAddressDTO createStartAddress, CreateAddressDTO createEndAddress) {
         Route route = routeMapper.toEntity(routeService.getRouteByJoinCode(joinCode));
-        UserAccount userAccount = userAccountMapper.toEntity(userAccountService.getUserById(userId));
 
+        if(route.getDriver().getUserId().equals(userId)) {
+            throw new RouteException("You cannot join a route you created!");
+        }
+
+        UserAccount userAccount = userAccountMapper.toEntity(userAccountService.getUserById(userId));
         RouteMemberPK routeMemberPK = new RouteMemberPK(route.getRouteId(), userAccount.getUserId());
 
         Long startAddressId = addressService.addAddress(createStartAddress);
@@ -49,8 +51,8 @@ public class RouteMemberService {
         Optional<Address> endAddress = addressRepository.findById(endAddressId);
 
         if(startAddress.isPresent() && endAddress.isPresent()) {
-            RouteMember routeMember = routeMemberRepository.save(new RouteMember(routeMemberPK, route, userAccount, startAddress.get(), endAddress.get()));
-            return routeMemberMapper.toDto(routeMember);
+            routeMemberRepository.save(new RouteMember(routeMemberPK, route, userAccount, startAddress.get(), endAddress.get()));
+            return;
         }
 
         throw new RouteException("An error occurred while joining the Route");

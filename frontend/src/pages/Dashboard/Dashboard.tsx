@@ -2,10 +2,10 @@ import React, {useState, useContext, useEffect} from "react";
 import Navbar from "../../components/Navbar.tsx";
 import RoutesCard from "../../components/RoutesCard.tsx";
 import {IoMdAdd} from "react-icons/io";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {IRoute} from "../../model/IRoute.ts";
 import {UserContext} from "../../context/UserContext.tsx";
-import {getJoinedRoutes, getRouteByJoinCode, getRoutes} from "../../services/RouteService.ts";
+import {getJoinedRoutes, getRouteByJoinCode, getRoutes, routeExists} from "../../services/RouteService.ts";
 import {RouteContext} from "../../context/RouteContext.tsx";
 
 /**
@@ -24,6 +24,7 @@ function Dashboard(props) {
     const [joinRoutes, setJoinRoutes] = useState<IRoute[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [joinCode, setJoinCode] = useState("");
+    const navigate = useNavigate();
 
     const userContext = useContext(UserContext);
     const routeContext = useContext(RouteContext);
@@ -60,10 +61,13 @@ function Dashboard(props) {
     };
 
     const handleJoinCarpool = () => {
-        getRouteByJoinCode(joinCode)
-            .then((route) => {
-                //TODO: Continue to join route page
-                console.log(route);
+        routeExists(joinCode)
+            .then((existing) => {
+               if (existing == true) {
+                  navigate("/joinRoute/" + joinCode);
+               } else {
+                   alert("This route does not exist");
+               }
             })
             .catch((error) => {
                 if(error.status == 404) {

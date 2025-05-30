@@ -47,6 +47,13 @@ public class RouteController {
         return ResponseEntity.ok(routeService.getRouteByJoinCode(joinCode));
     }
 
+    @GetMapping("/routeExists")
+    public ResponseEntity<Boolean> routeExisting(
+            @RequestParam String joinCode
+    ) {
+        return ResponseEntity.ok(routeService.routeExisting(joinCode));
+    }
+
     @PostMapping("/createRoute")
     public ResponseEntity<Long> createRoute(
             @RequestBody CreateRouteDTO routeDTO

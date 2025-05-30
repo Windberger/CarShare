@@ -22,7 +22,7 @@ function Navbar(props: NavbarProps) {
                 }
                 {
                     !previousPage &&
-                    <a className="text-xl font-bold hover:text-white" onClick={() => navigate("/")}>CarShare</a>
+                    <a className="text-xl font-bold hover:text-white cursor-pointer" onClick={() => navigate("/")}>CarShare</a>
                 }
                 <ul className="flex space-x-4">
 
