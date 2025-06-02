@@ -1,4 +1,5 @@
 import {IAddress} from "./IAddress.ts";
+import {IUser} from "./IUser.ts";
 
 
 export interface IRoute{
@@ -6,6 +7,7 @@ export interface IRoute{
     startAddress: IAddress,
     endAddress: IAddress,
     startTime: Date,
-    joinCode: number
+    joinCode: number,
+    routeMembers: IUser[]
 
 }

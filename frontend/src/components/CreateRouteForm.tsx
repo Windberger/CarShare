@@ -7,6 +7,8 @@ import {createAddress} from "../services/AddressService.ts";
 import {UserContext} from "../context/UserContext.tsx";
 import {createRoute} from "../services/RouteService.ts";
 import {CreateRoute} from "../interfaces/RouteInterfaces.ts";
+import {useNavigate} from "react-router-dom";
+
 
 type CountryOption = {
     label: string;
@@ -34,6 +36,7 @@ function CreateRouteForm() {
     const [destinationCountry, setDestinationCountry] = useState<CountryOption | null>(null);
     const [startDate, setStartDate] = useState("");
     const [startTime, setStartTime] = useState("")
+    const navigate = useNavigate();
 
     const userContext = useContext(UserContext);
     if(!userContext) {
@@ -215,6 +218,7 @@ function CreateRouteForm() {
                         <button
                             type="submit"
                             className="px-6 py-2 bg-[#194569] text-white rounded-full shadow hover:bg-[#163a57] transition"
+                            onClick={()=> navigate('/dashboard')}
                         >
                             Create Carpool
                         </button>
