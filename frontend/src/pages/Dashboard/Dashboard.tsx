@@ -28,7 +28,8 @@ function Dashboard(props) {
 
     const userContext = useContext(UserContext);
     const routeContext = useContext(RouteContext);
-    if(!userContext || !routeContext) {
+
+    if (!userContext || !routeContext) {
         throw new Error("Context not found");
     }
     const {userId} = userContext;
@@ -36,10 +37,6 @@ function Dashboard(props) {
 
 
     const getRoutesForCards = (userId: number | null) => {
-
-        if(userId == null) {
-            console.error("User ID is null!");
-        }
 
         getRoutes(userId)
             .then((routes) => {
@@ -63,14 +60,14 @@ function Dashboard(props) {
     const handleJoinCarpool = () => {
         routeExists(joinCode)
             .then((existing) => {
-               if (existing == true) {
-                  navigate("/joinRoute/" + joinCode);
-               } else {
-                   alert("This route does not exist");
-               }
+                if (existing == true) {
+                    navigate("/joinRoute/" + joinCode);
+                } else {
+                    alert("This route does not exist");
+                }
             })
             .catch((error) => {
-                if(error.status == 404) {
+                if (error.status == 404) {
                     alert("A route with this code does not exist!");
                 } else {
                     alert("An unknown error occurred!");
@@ -81,19 +78,23 @@ function Dashboard(props) {
     };
 
     useEffect(() => {
-        getRoutesForCards(userId);
-    }, []);
+        if (!userId) {
+            console.warn("User ID is null!");
+            return;
+        }
+        getRoutesForCards(userId)
+    }, [userId]);
 
     return (
         <div className={"bg-white min-h-screen w-screen"}>
             <Navbar previousPage={null}/>
             <div className="flex gap-4 mb-6 m-4">
-                <Link
-                    to="/createCarpool"
+                <button
+                    onClick={()=>navigate('/createCarpool')}
                     className="flex items-center gap-2 px-4 py-2 bg-[#194569] text-white shadow rounded-3xl"
                 >
                     <IoMdAdd/> Add Route
-                </Link>
+                </button>
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow"

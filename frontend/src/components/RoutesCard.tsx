@@ -1,5 +1,7 @@
 import {useState} from "react";
 import {IRoute} from "../model/IRoute.ts";
+import {useNavigate} from "react-router-dom";
+
 
 /**
  * @author Johanna Hechtl
@@ -13,6 +15,8 @@ interface RoutesCardProps {
 }
 
 function RoutesCard({title, routes}: RoutesCardProps) {
+    const navigate = useNavigate();
+
 
     function handleClick(id: number) {
         navigate(`/detailRoute/${id}`);
@@ -25,7 +29,7 @@ function RoutesCard({title, routes}: RoutesCardProps) {
             <div className="p-4 border-2 border-[#194569] rounded-xl shadow-md text-black">
                 {routes.map((route, key) => (
                     <div key={key} className={"bg-gray-100 m-2 p-2 rounded-xl flex justify-between items-center"}
-                         onClick={() => handleClick(key)}>
+                         onClick={() => handleClick(route.routeId)}>
                         <div className={"w-[300px] truncate"}>From {route.startAddress.city} to {route.endAddress.city}
                         </div>
                         <div className={"text-right whitespace-nowrap"}>

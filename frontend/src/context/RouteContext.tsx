@@ -1,6 +1,12 @@
 import React, { createContext, useState, ReactNode } from "react";
 import { IRoute } from "../model/IRoute";
 
+/**
+ * @author Johanna Hechtl
+ * @since 13.05.2025
+ */
+
+
 interface RouteContextType {
     recentRoutes: IRoute[];
     setRecentRoutes: (routes: IRoute[]) => void;

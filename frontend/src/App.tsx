@@ -4,7 +4,7 @@ import Homepage from "./pages/Homepage/Homepage.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import CreateRouteForm from "./components/CreateRouteForm.tsx";
-import RouteDetails from "./components/RouteDetails.tsx";
+import RouteDetails from "./pages/DetailPage/RouteDetails.tsx";
 import JoinRouteForm from "./components/JoinRouteForm.tsx";
 
 function App() {

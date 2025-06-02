@@ -14,6 +14,7 @@ export const registerUser = async (userData: RegisterUser, setUserId: (id: numbe
 
         setUserId(response.data.userId);
 
+
         return response.data;
     } catch (error) {
         throw error;
