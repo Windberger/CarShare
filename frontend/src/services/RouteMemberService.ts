@@ -14,3 +14,15 @@ export const createRouteMember = async (joinCode: string, userId: number, startA
         withCredentials: true
     });
 };
+
+export const getRouteMembers = async (routeId: number)=>{
+    const response =  await apiClient.get(`/routeMembers/getMembersOfRoute/${routeId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+
+    return response.data;
+
+}

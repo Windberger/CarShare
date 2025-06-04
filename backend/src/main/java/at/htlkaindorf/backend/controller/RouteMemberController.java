@@ -3,6 +3,7 @@ package at.htlkaindorf.backend.controller;
 import at.htlkaindorf.backend.dto.AddRouteMemberDTO;
 import at.htlkaindorf.backend.dto.CreateAddressDTO;
 import at.htlkaindorf.backend.dto.RouteMemberDTO;
+import at.htlkaindorf.backend.dto.RouteMemberDetailDTO;
 import at.htlkaindorf.backend.mapper.RouteMapper;
 import at.htlkaindorf.backend.mapper.UserAccountMapper;
 import at.htlkaindorf.backend.pojos.Address;
@@ -43,5 +44,17 @@ public class RouteMemberController {
                 dto.getEndAddress()
         );
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/getMembersOfRoute/{routeId}")
+    public ResponseEntity<Iterable<RouteMemberDetailDTO>> getMembersOfRoute(
+            @PathVariable Long routeId
+    ){
+
+        Iterable<RouteMemberDetailDTO> routeMembers = routeMemberService.getMembersOfRoute(routeId);
+
+        return ResponseEntity.ok(routeMembers);
+
+
     }
 }

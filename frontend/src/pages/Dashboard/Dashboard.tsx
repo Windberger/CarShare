@@ -90,7 +90,7 @@ function Dashboard(props) {
             <Navbar previousPage={null}/>
             <div className="flex gap-4 mb-6 m-4">
                 <button
-                    onClick={()=>navigate('/createCarpool')}
+                    onClick={() => navigate('/createCarpool')}
                     className="flex items-center gap-2 px-4 py-2 bg-[#194569] text-white shadow rounded-3xl"
                 >
                     <IoMdAdd/> Add Route
