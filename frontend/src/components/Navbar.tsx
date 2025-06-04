@@ -12,7 +12,7 @@ function Navbar(props: NavbarProps) {
 
     return (
         <div className={"w-full"}>
-            <nav className="bg-[#194569] text-white p-4 flex items-center">
+            <nav className="bg-[#194569] text-white p-4 flex justify-between">
                 { previousPage &&
 
                     <a onClick={() => navigate("/" + previousPage)} className="mr-4 flex items-center cursor-pointer">
@@ -24,9 +24,7 @@ function Navbar(props: NavbarProps) {
                     !previousPage &&
                     <a className="text-xl font-bold hover:text-white cursor-pointer" onClick={() => navigate("/")}>CarShare</a>
                 }
-                <ul className="flex space-x-4">
-
-                </ul>
+                <button onClick={() => navigate("/")}>Logout</button>
             </nav>
         </div>
     );
