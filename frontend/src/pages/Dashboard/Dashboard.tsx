@@ -76,6 +76,9 @@ function Dashboard(props) {
 
         setIsModalOpen(false);
     };
+    const setModalOpen = (open: boolean) => {
+        setIsModalOpen(open);
+    }
 
     useEffect(() => {
         if (!userId) {
@@ -104,8 +107,8 @@ function Dashboard(props) {
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-                <RoutesCard title={"Recent Routes"} routes={driverRoutes}></RoutesCard>
-                <RoutesCard title={"Recent Joined Routes"} routes={joinRoutes}></RoutesCard>
+                <RoutesCard title={"Recent Routes"} routes={driverRoutes} setModalOpen={setModalOpen}></RoutesCard>
+                <RoutesCard title={"Recent Joined Routes"} routes={joinRoutes} setModalOpen={setModalOpen}></RoutesCard>
             </div>
 
             {isModalOpen && (
