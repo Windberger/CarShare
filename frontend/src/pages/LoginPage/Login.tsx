@@ -32,11 +32,11 @@ function Login() {
         if (register) {
             const user: RegisterUser = {
                 email: email,
-                firstName: firstName,
-                lastName: lastName,
+                firstname: firstName,
+                lastname: lastName,
                 password: password
             }
-
+            
             registerUser(user, setUserId)
                 .then((res) => {
                     setUserId(res)

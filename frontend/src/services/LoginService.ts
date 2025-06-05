@@ -37,3 +37,13 @@ export const loginUser = async (userData: LoginUser, setUserId: (id: number | nu
         throw error;
     }
 };
+
+export const logoutUser = async () => {
+    const response = await apiClient.post('/logout', {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    return response.data;
+};

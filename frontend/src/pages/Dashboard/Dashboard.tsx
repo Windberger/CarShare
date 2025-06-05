@@ -103,12 +103,12 @@ function Dashboard(props) {
 
                         <Navbar previousPage={null}/>
                         <div className="flex gap-4 mb-6 m-4">
-                            <Link
-                                to="/createCarpool"
+                            <button
+                                onClick={()=>navigate('/createCarpool')}
                                 className="flex items-center gap-2 px-4 py-2 bg-[#194569] text-white shadow rounded-3xl"
                             >
                                 <IoMdAdd/> Add Route
-                            </Link>
+                            </button>
                             <button
                                 onClick={() => setIsModalOpen(true)}
                                 className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow"

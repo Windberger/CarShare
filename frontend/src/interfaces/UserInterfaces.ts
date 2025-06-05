@@ -1,7 +1,7 @@
 export interface RegisterUser {
     email: string;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     password: string;
 }
 
@@ -13,6 +13,6 @@ export interface LoginUser {
 export interface UserData {
     userId: number;
     email: string;
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
 }

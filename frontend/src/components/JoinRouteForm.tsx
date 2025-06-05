@@ -211,7 +211,7 @@ function JoinRouteForm() {
 
                     {routeData &&
                         <p className="text-black mb-4 text-xl">
-                            Route from {routeData.driver.firstName}, starts on {dateString}
+                            Route from {routeData.driver.firstname}, starts on {dateString}
                         </p>
                     }
                     {renderAddressFields('start', startAddress)}
