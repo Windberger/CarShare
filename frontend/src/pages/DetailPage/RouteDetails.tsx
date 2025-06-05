@@ -1,30 +1,64 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, {useContext, useState, useEffect} from "react";
 import Navbar from "../../components/Navbar.tsx";
-import { useParams } from "react-router-dom";
-import { RouteContext } from "../../context/RouteContext.tsx";
-import { getRouteMembers } from "../../services/RouteMemberService.ts";
-import { IMember } from "../../model/IMember.ts";
-import { IUser } from "../../model/IUser.ts";
-import { getUser } from "../../services/UserService.ts";
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from "react-leaflet";
+import {useParams} from "react-router-dom";
+import {RouteContext} from "../../context/RouteContext.tsx";
+import {getRouteMembers} from "../../services/RouteMemberService.ts";
+import {IMember} from "../../model/IMember.ts";
+import {IUser} from "../../model/IUser.ts";
+import {getUser} from "../../services/UserService.ts";
+import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
+/**
+ * @author Johanna Hechtl
+ * @since 02.06.2025
+ */
+
+
 function RouteDetails() {
-    const { id } = useParams();
-    const { recentRoutes, joinedRoutes } = useContext(RouteContext)!;
+    const {id} = useParams();
+    const {recentRoutes, joinedRoutes} = useContext(RouteContext)!;
     const routeId = Number(id);
 
     const [members, setMembers] = useState<IMember[]>([]);
     const [membersAccount, setMembersAccount] = useState<IUser[]>([]);
     const [startCoord, setStartCoord] = useState<[number, number] | null>(null);
     const [endCoord, setEndCoord] = useState<[number, number] | null>(null);
-    const [memberMarkers, setMemberMarkers] = useState<{ type: "pickup" | "dropoff"; coords: [number, number] }[]>([]);
+    const [memberMarkers, setMemberMarkers] = useState<{
+        type: "pickup" | "dropoff";
+        coords: [number, number];
+        memberId: number
+    }[]>([]);
     const [routeCoords, setRouteCoords] = useState<number[][]>([]);
 
     const route =
         recentRoutes.find((r) => r.routeId === routeId) ||
         joinedRoutes.find((r) => r.routeId === routeId);
+
+
+    // TODO
+    function exportToGoogleMaps() {
+        if (!startCoord || !endCoord || routeCoords.length === 0) return;
+
+        const start = `${startCoord[0]},${startCoord[1]}`;
+        const end = `${endCoord[0]},${endCoord[1]}`;
+
+        const waypoints = routeCoords
+            .slice(1, -1)
+            .map(coord => `${coord[0]},${coord[1]}`)
+            .slice(0, 23)
+            .join('|');
+
+        let url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${end}`;
+        if (waypoints) {
+            url += `&waypoints=${encodeURIComponent(waypoints)}`;
+        }
+        url += `&travelmode=driving`;
+
+        window.open(url, '_blank');
+    }
+
 
     useEffect(() => {
         getRouteMembers(routeId).then(setMembers);
@@ -113,13 +147,15 @@ function RouteDetails() {
                     orderedCoords.push(next.end);
                     currentPos = next.end;
                     next.visited = true;
+
+
                 }
 
                 orderedCoords.push(end);
 
                 const res = await axios.post(
                     `https://api.openrouteservice.org/v2/directions/driving-car/geojson`,
-                    { coordinates: orderedCoords },
+                    {coordinates: orderedCoords},
                     {
                         headers: {
                             Authorization: apiKey,
@@ -133,8 +169,8 @@ function RouteDetails() {
                 setRouteCoords(res.data.features[0].geometry.coordinates.map(([lng, lat]: number[]) => [lat, lng]));
 
                 const markers = memberCoords.flatMap(m => [
-                    { type: "pickup", coords: [m.start[1], m.start[0]] },
-                    { type: "dropoff", coords: [m.end[1], m.end[0]] },
+                    {type: "pickup", coords: [m.start[1], m.start[0]], memberId: m.memberId},
+                    {type: "dropoff", coords: [m.end[1], m.end[0]], memberId: m.memberId}
                 ]);
                 setMemberMarkers(markers);
 
@@ -148,7 +184,7 @@ function RouteDetails() {
 
     return (
         <div className="bg-white min-h-screen w-screen">
-            <Navbar previousPage="dashboard" />
+            <Navbar previousPage="dashboard"/>
 
             <div className="bg-white text-black m-10">
                 <p className="text-[#194569] text-4xl font-bold">
@@ -156,8 +192,10 @@ function RouteDetails() {
                 </p>
 
                 <div className="mt-2">
-                    <p>Start Address: {route?.startAddress.street} {route?.startAddress.houseNumber}, {route?.startAddress.postalCode} {route?.startAddress.city}</p>
-                    <p>End Address: {route?.endAddress.street} {route?.endAddress.houseNumber}, {route?.endAddress.postalCode} {route?.endAddress.city}</p>
+                    <p>Start
+                        Address: {route?.startAddress.street} {route?.startAddress.houseNumber}, {route?.startAddress.postalCode} {route?.startAddress.city}</p>
+                    <p>End
+                        Address: {route?.endAddress.street} {route?.endAddress.houseNumber}, {route?.endAddress.postalCode} {route?.endAddress.city}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-8">
@@ -165,7 +203,8 @@ function RouteDetails() {
                         {membersAccount.map((user, key) => {
                             const member = members.find((m) => m.memberId === user.userId);
                             return (
-                                <div key={key} className="flex items-center bg-gray-100 p-4 rounded-xl shadow-sm justify-between">
+                                <div key={key}
+                                     className="flex items-center bg-gray-100 p-4 rounded-xl shadow-sm justify-between">
                                     <div className="flex-1">
                                         <div className="font-semibold text-lg">
                                             {user.firstname} {user.lastname} - {member?.endAddress.city}
@@ -190,7 +229,7 @@ function RouteDetails() {
                             center={[47.03, 15.46]}
                             zoom={12}
                             scrollWheelZoom
-                            style={{ height: "500px", width: "100%", borderRadius: "1rem" }}
+                            style={{height: "500px", width: "100%", borderRadius: "1rem"}}
                         >
                             <TileLayer
                                 attribution='&copy; OpenStreetMap contributors'
@@ -199,25 +238,31 @@ function RouteDetails() {
 
                             {routeCoords.length > 0 && (
                                 <>
-                                    <Polyline positions={routeCoords} color="blue" weight={5} />
-                                    {startCoord && <Marker position={startCoord} />}
-                                    {endCoord && <Marker position={endCoord} />}
+                                    <Polyline positions={routeCoords} color="blue" weight={5}/>
+                                    {startCoord && <Marker position={startCoord}/>}
+                                    {endCoord && <Marker position={endCoord}/>}
                                 </>
                             )}
 
-                            {memberMarkers.map((m, idx) => (
-                                <Marker key={idx} position={m.coords}>
-                                    <Popup>{m.type === "pickup" ? "Pick-up" : "Drop-off"}</Popup>
-                                </Marker>
-                            ))}
+                            {memberMarkers.map((m, idx) => {
+                                const user = membersAccount.find(u => u.userId === m.memberId);
+                                return (
+                                    <Marker key={idx} position={m.coords}>
+                                        <Popup>
+                                            {m.type === "pickup" ? "Pick-up" : "Drop-off"} - {user?.firstname} {user?.lastname}
+                                        </Popup>
+                                    </Marker>
+                                );
+                            })}
                         </MapContainer>
                     </div>
 
+                    {/*TODO*/}
                     <div className="mt-6 text-black space-y-1 text-base">
                         <p>Distance: 54,43 km</p>
                         <p>Estimated fuel consumption: 5 litres</p>
                         <p>Estimated costs (at a price of 1,64€ per litre): <strong>8,2€</strong></p>
-                        <button className="mt-4 px-4 py-2 bg-[#194569] text-white rounded-3xl">
+                        <button className="mt-4 px-4 py-2 bg-[#194569] text-white rounded-xl" onClick={exportToGoogleMaps}>
                             Export route to Google Maps
                         </button>
                     </div>

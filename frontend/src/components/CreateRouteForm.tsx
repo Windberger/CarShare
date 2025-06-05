@@ -39,7 +39,7 @@ function CreateRouteForm() {
     const navigate = useNavigate();
 
     const userContext = useContext(UserContext);
-    if(!userContext) {
+    if (!userContext) {
         throw new Error("UserContext not found");
     }
     const {userId} = userContext;
@@ -58,7 +58,7 @@ function CreateRouteForm() {
                 destinationAddressId = data;
                 console.log("start id: " + startAddressId + " end addr id " + destinationAddressId + " usid " + userId)
 
-                if(startAddressId && destinationAddressId && userId) {
+                if (startAddressId && destinationAddressId && userId) {
                     const datetime = `${startDate}T${startTime}`
 
                     const route: CreateRoute = {
@@ -70,7 +70,7 @@ function CreateRouteForm() {
                     createRoute(route).then((data) => {
                         console.log(data);
                     }).catch((error) => {
-                        if(error.status == 403) {
+                        if (error.status == 403) {
                             alert("This route already exists!");
                         } else {
                             console.error(error);
@@ -79,13 +79,13 @@ function CreateRouteForm() {
                     });
                 }
             }).catch((error) => {
-                if(error.status == 400){
-                    alert("Address does not exist!")
+                if (error.status == 400) {
+                    alert(`Address ${destinationAddress.street} ${destinationAddress.houseNumber}, ${destinationAddress.city} does not exist!`)
                 }
             })
         }).catch((error) => {
-            if(error.status == 400){
-                alert("Address does not exist!")
+            if (error.status == 400) {
+                alert(`Address ${startAddress.street} ${startAddress.houseNumber}, ${startAddress.city} does not exist!`)
             }
         });
     };
@@ -219,7 +219,7 @@ function CreateRouteForm() {
                         <button
                             type="submit"
                             className="px-6 py-2 bg-[#194569] text-white rounded-xl shadow hover:bg-[#163a57] transition"
-                            onClick={()=> navigate('/dashboard')}
+                            onClick={() => navigate('/dashboard')}
                         >
                             Create Carpool
                         </button>
