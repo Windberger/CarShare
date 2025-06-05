@@ -57,4 +57,19 @@ public class RouteMemberController {
 
 
     }
+
+    @DeleteMapping("/removeMemberOfRoute/{routeId}/{memberId}")
+    public ResponseEntity<RouteMemberDetailDTO> removeMemberOfRoute(
+            @PathVariable Long routeId, @PathVariable Long memberId
+    ){
+
+        RouteMemberDetailDTO routeMember = routeMemberService.removeMemberOfRoute(routeId,memberId);
+
+        return ResponseEntity.ok(routeMember);
+
+
+    }
+
+
+
 }

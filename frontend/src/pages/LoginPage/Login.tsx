@@ -123,6 +123,8 @@ function Login() {
                                                        value={password}
                                                        valueAgain={repeatPassword}
                                                        onChange={(isValid: never) => setIsPasswordValid(isValid)}
+                                                       iconSize="10"
+
 
                                     />
                                 </div>

@@ -91,13 +91,13 @@ function Dashboard(props) {
             <div className="flex gap-4 mb-6 m-4">
                 <button
                     onClick={()=>navigate('/createCarpool')}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#194569] text-white shadow rounded-3xl"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-[#194569] hover:scale-103 hover:shadow-xl bg-gray-400 text-white shadow-lg rounded-xl"
                 >
                     <IoMdAdd/> Add Route
                 </button>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow"
+                    className="px-4 py-2 hover:bg-[#194569] bg-gray-400 text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-103"
                 >
                     Join Carpool
                 </button>
@@ -109,14 +109,14 @@ function Dashboard(props) {
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center h-auto rounded-xl ">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-lg text-black font-bold mb-4">Enter Join Code</h2>
                         <input
                             type="text"
                             value={joinCode}
                             onChange={(e) => setJoinCode(e.target.value)}
-                            className="border p-2 w-full mb-4"
+                            className="border p-2 w-full mb-4 "
                             placeholder="Enter join code"
                         />
                         <div className="flex justify-between">

@@ -67,4 +67,20 @@ public class RouteMemberService {
 
 
     }
+
+    public RouteMemberDetailDTO removeMemberOfRoute(Long routeId, Long memberId) {
+        Iterable<RouteMemberDetailDTO> routeMembers = getMembersOfRoute(routeId);
+
+        for (RouteMemberDetailDTO routeMember : routeMembers
+        ) {
+
+            if (routeMember.getMemberId().equals(memberId)) {
+                routeMemberRepository.delete(routeMemberDetailMapper.toEntity(routeMember));
+                return routeMember;
+            }
+
+        }
+
+        throw new RouteException("Route member not found!");
+    }
 }
