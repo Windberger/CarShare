@@ -126,6 +126,7 @@ function CreateRouteForm() {
                         value={type === 'start' ? startCountry : destinationCountry}
                         onChange={(e) => handleCountryChange(e, type)}
                         className="text-black"
+                        placeholder="Country"
                     />
                 </div>
                 <div>
@@ -217,7 +218,7 @@ function CreateRouteForm() {
                     <div className="flex justify-center">
                         <button
                             type="submit"
-                            className="px-6 py-2 bg-[#194569] text-white rounded-full shadow hover:bg-[#163a57] transition"
+                            className="px-6 py-2 bg-[#194569] text-white rounded-xl shadow hover:bg-[#163a57] transition"
                             onClick={()=> navigate('/dashboard')}
                         >
                             Create Carpool

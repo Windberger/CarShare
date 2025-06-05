@@ -85,8 +85,12 @@ function Dashboard(props) {
     }
 
     useEffect(() => {
-        getRoutesForCards(userId);
-    }, []);
+        if (!userId) {
+            console.warn("User ID is null!");
+            return;
+        }
+        getRoutesForCards(userId)
+    }, [userId]);
 
     return (
         <div className="bg-white min-h-screen w-screen">

@@ -1,7 +1,12 @@
 package at.htlkaindorf.backend.controller;
 
+import at.htlkaindorf.backend.dto.UserAccountDTO;
 import at.htlkaindorf.backend.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,24 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 public class UserAccountController {
 
     private final UserAccountService userService;
-//    private PasswordEncoder passwordEncoder;
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Object> registerUser(@RequestBody UserAccount user) {
-////        if(userRepository.existsByEmail(signupRequest.getEmail())){
-////            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
-////        }
-//        return ResponseEntity.ok(userService.registerUser(user));
-//    }
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login() {
-//        return null;
-//
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserAccountDTO> getUserById(
+            @PathVariable long id
+    ){
+
+        UserAccountDTO user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+
+    }
 
 
 }

@@ -3,11 +3,9 @@ package at.htlkaindorf.backend.service;
 import at.htlkaindorf.backend.dto.AddressDetailDTO;
 import at.htlkaindorf.backend.dto.CreateAddressDTO;
 import at.htlkaindorf.backend.dto.RouteMemberDTO;
+import at.htlkaindorf.backend.dto.RouteMemberDetailDTO;
 import at.htlkaindorf.backend.exception.RouteException;
-import at.htlkaindorf.backend.mapper.AddressMapper;
-import at.htlkaindorf.backend.mapper.RouteMapper;
-import at.htlkaindorf.backend.mapper.RouteMemberMapper;
-import at.htlkaindorf.backend.mapper.UserAccountMapper;
+import at.htlkaindorf.backend.mapper.*;
 import at.htlkaindorf.backend.pojos.*;
 import at.htlkaindorf.backend.repositories.AddressRepository;
 import at.htlkaindorf.backend.repositories.RouteMemberRepository;
@@ -15,7 +13,9 @@ import at.htlkaindorf.backend.repositories.RouteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -34,11 +34,12 @@ public class RouteMemberService {
     private final UserAccountService userAccountService;
     private final AddressService addressService;
     private final AddressRepository addressRepository;
+    private final RouteMemberDetailMapper routeMemberDetailMapper;
 
     public void addRouteMember(String joinCode, Long userId, CreateAddressDTO createStartAddress, CreateAddressDTO createEndAddress) {
         Route route = routeMapper.toEntity(routeService.getRouteByJoinCode(joinCode));
 
-        if(route.getDriver().getUserId().equals(userId)) {
+        if (route.getDriver().getUserId().equals(userId)) {
             throw new RouteException("You cannot join a route you created!");
         }
 
@@ -50,11 +51,36 @@ public class RouteMemberService {
         Optional<Address> startAddress = addressRepository.findById(startAddressId);
         Optional<Address> endAddress = addressRepository.findById(endAddressId);
 
-        if(startAddress.isPresent() && endAddress.isPresent()) {
+        if (startAddress.isPresent() && endAddress.isPresent()) {
             routeMemberRepository.save(new RouteMember(routeMemberPK, route, userAccount, startAddress.get(), endAddress.get()));
             return;
         }
 
         throw new RouteException("An error occurred while joining the Route");
+    }
+
+    public Iterable<RouteMemberDetailDTO> getMembersOfRoute(Long routeId) {
+
+        List<RouteMemberDetailDTO> routeMembers = routeMemberRepository.getMembersOfRoute(routeId).stream().map(routeMemberDetailMapper::toDto).toList();
+
+        return routeMembers;
+
+
+    }
+
+    public RouteMemberDetailDTO removeMemberOfRoute(Long routeId, Long memberId) {
+        Iterable<RouteMemberDetailDTO> routeMembers = getMembersOfRoute(routeId);
+
+        for (RouteMemberDetailDTO routeMember : routeMembers
+        ) {
+
+            if (routeMember.getMemberId().equals(memberId)) {
+                routeMemberRepository.delete(routeMemberDetailMapper.toEntity(routeMember));
+                return routeMember;
+            }
+
+        }
+
+        throw new RouteException("Route member not found!");
     }
 }

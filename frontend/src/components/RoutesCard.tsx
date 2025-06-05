@@ -45,12 +45,12 @@ function RoutesCard({title, routes, setModalOpen}: RoutesCardProps) {
             }
             {
                 routes.length != 0 &&
-                <div className="p-4 border-2 border-[#194569] rounded-xl shadow-md text-black">
+                <div className="p-4 border-2 hover:border-[#194569]  hover:shadow-2xl rounded-xl shadow-xl text-black">
                     {routes.map((route, key) => (
-                        <div key={key} className={"bg-gray-100 m-2 p-2 rounded-xl flex justify-between items-center cursor-pointer"}
+                        <div key={key} className={"bg-gray-100 m-2 p-2 rounded-xl flex justify-between items-center cursor-pointer hover:scale-105"}
                              onClick={() => handleClick(route.routeId)}>
                             <div
-                                className={"w-[300px] truncate"}>From {route.startAddress.city} to {route.endAddress.city}
+                                className={"w-[300px] truncate  "}>From {route.startAddress.city} to {route.endAddress.city}
                             </div>
                             <div className={"text-right whitespace-nowrap"}>
                                 Join Code: {route.joinCode}
