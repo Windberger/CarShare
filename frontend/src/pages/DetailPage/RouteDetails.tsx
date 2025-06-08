@@ -1,14 +1,18 @@
-import React, {useContext, useState, useEffect} from "react";
+import {useContext, useState, useEffect} from "react";
 import Navbar from "../../components/Navbar.tsx";
 import {useParams} from "react-router-dom";
 import {RouteContext} from "../../context/RouteContext.tsx";
-import {getRouteMembers} from "../../services/RouteMemberService.ts";
+import {getRouteMembers, removeRouteMember} from "../../services/RouteMemberService.ts";
 import {IMember} from "../../model/IMember.ts";
 import {IUser} from "../../model/IUser.ts";
 import {getUser} from "../../services/UserService.ts";
 import {MapContainer, TileLayer, Polyline, Marker, Popup} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import axios from "axios";
+import {IRouteResult} from "../../model/IRoute.ts";
+import {calculateRoute, deleteRouteById} from "../../services/RouteService.ts";
+import {useNavigate} from "react-router-dom";
+import {UserContext} from "../../context/UserContext.tsx";
+
 
 /**
  * @author Johanna Hechtl
@@ -16,52 +20,132 @@ import axios from "axios";
  */
 
 
+
+// @ts-ignore
 function RouteDetails() {
     const {id} = useParams();
     const {recentRoutes, joinedRoutes} = useContext(RouteContext)!;
     const routeId = Number(id);
+    const navigate = useNavigate();
+
 
     const [members, setMembers] = useState<IMember[]>([]);
     const [membersAccount, setMembersAccount] = useState<IUser[]>([]);
-    const [startCoord, setStartCoord] = useState<[number, number] | null>(null);
-    const [endCoord, setEndCoord] = useState<[number, number] | null>(null);
+    const [routeResult, setRouteResult] = useState<IRouteResult | null>(null)
+    const [startCoords, setStartCoords] = useState<[number, number] | null>([47.05, 15.43]);
+    const [endCoords, setEndCoords] = useState<[number, number] | null>(null);
+    const [routeSteps, setRouteSteps] = useState<number[][]>([]);
     const [memberMarkers, setMemberMarkers] = useState<{
-        type: "pickup" | "dropoff";
-        coords: [number, number];
+        type: string;
+        coords: number[];
         memberId: number
     }[]>([]);
     const [routeCoords, setRouteCoords] = useState<number[][]>([]);
+
+    const userContext = useContext(UserContext);
+    if (!userContext) {
+        throw new Error("Context not found");
+    }
+    const {userId} = userContext;
 
     const route =
         recentRoutes.find((r) => r.routeId === routeId) ||
         joinedRoutes.find((r) => r.routeId === routeId);
 
 
-    // TODO
-    function exportToGoogleMaps() {
-        if (!startCoord || !endCoord || routeCoords.length === 0) return;
+    const exportToGoogleMaps = () => {
+        if (!routeSteps) return;
 
-        const start = `${startCoord[0]},${startCoord[1]}`;
-        const end = `${endCoord[0]},${endCoord[1]}`;
+        let url = `https://www.google.com/maps/dir/`;
 
-        const waypoints = routeCoords
-            .slice(1, -1)
-            .map(coord => `${coord[0]},${coord[1]}`)
-            .slice(0, 23)
-            .join('|');
-
-        let url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${end}`;
-        if (waypoints) {
-            url += `&waypoints=${encodeURIComponent(waypoints)}`;
-        }
-        url += `&travelmode=driving`;
+        routeSteps.forEach((step) => {
+            url += step[0] + ',' + step[1] + "/";
+        });
 
         window.open(url, '_blank');
     }
+    const removeMember = (memberId: number) => {
+        if(routeResult && userId !== routeResult.driverId) {
+            return;
+        }
+        removeRouteMember(routeId, memberId).then(() => {
+            console.log("Member removed successfully: " + memberId);
+            fetchRouteMembers();
+        }).catch((error) => {
+            console.error("Error removing member:", error);
+        })
+    }
 
+    const calculate = (members: IMember[]) => {
+        calculateRoute(routeId).then((result: IRouteResult) => {
+            setRouteResult(result);
+
+            const coords = result.addresses.map(addr => [addr.lon, addr.lat]);
+            setRouteCoords(result.directionCoordinates);
+            setStartCoords([coords[0][0], coords[0][1]]);
+            setEndCoords([coords[coords.length - 1][0], coords[coords.length - 1][1]]);
+            setRouteSteps(coords);
+
+            let markers = result.addresses.map(step => {
+                let type = "";
+                const member = members.find(m => {
+                    const start = m.startAddress;
+                    const end = m.endAddress;
+                    if (start.addressId === step.addressId) {
+                        type = "pickup";
+                    } else if (end.addressId === step.addressId) {
+                        type = "dropoff";
+                    }
+
+                    return start.addressId === step.addressId || end.addressId === step.addressId;
+                });
+
+                if (!member) return [];
+                return (
+                    {
+                        type: type,
+                        coords: [step.lon, step.lat],
+                        memberId: member.memberId,
+                    }
+                );
+            });
+
+            // remove the first and last marker element of the array
+            markers = markers.filter((_marker, index) => {
+                return index !== 0 && index !== markers.length - 1;
+            });
+
+            
+            
+            setMemberMarkers(markers);
+        }).catch((error) => {
+            alert("Error calculating route: " + error.response.data.body.detail);
+        });
+    }
+
+    const fetchRouteMembers = () => {
+        getRouteMembers(routeId).then((memberResponse: IMember[]) => {
+            setMembers(memberResponse);
+            calculate(memberResponse);
+        });
+    }
+
+    const deleteRoute = () => {
+        if (!window.confirm("Are you sure you want to delete this route?")
+        || (routeResult && userId !== routeResult.driverId)) {
+            return;
+        }
+
+        deleteRouteById(routeId).then(() => {
+            navigate("/dashboard");
+        }).catch((error) => {
+            console.error("Error deleting route:", error);
+            alert("An error occurred while deleting the route.");
+        });
+    }
 
     useEffect(() => {
-        getRouteMembers(routeId).then(setMembers);
+        fetchRouteMembers();
     }, [routeId]);
 
     useEffect(() => {
@@ -73,163 +157,98 @@ function RouteDetails() {
         }
     }, [members]);
 
-    useEffect(() => {
-        const apiKey = "5b3ce3597851110001cf62487256929cc7a9432cb7026f541f531b99";
-
-        const geocode = async (address: any) => {
-            const query = `${address.street} ${address.houseNumber}, ${address.postalCode} ${address.city}`;
-            const res = await axios.get(
-                "https://api.openrouteservice.org/geocode/search",
-                {
-                    params: {
-                        api_key: apiKey,
-                        text: query,
-                        size: 1,
-                    },
-                }
-            );
-            return res.data.features[0].geometry.coordinates;
-        };
-
-        const haversineDistance = (coord1: number[], coord2: number[]) => {
-            const toRad = (x: number) => x * Math.PI / 180;
-            const [lon1, lat1] = coord1;
-            const [lon2, lat2] = coord2;
-            const R = 6371;
-            const dLat = toRad(lat2 - lat1);
-            const dLon = toRad(lon2 - lon1);
-            const a = Math.sin(dLat / 2) ** 2 +
-                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                Math.sin(dLon / 2) ** 2;
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
-        };
-
-        const fetchRouteWithWaypoints = async () => {
-            if (!route?.startAddress || !route?.endAddress) return;
-
-            try {
-                const start = await geocode(route.startAddress);
-                const end = await geocode(route.endAddress);
-
-                const memberCoords = await Promise.all(members.map(async (m) => {
-                    const startCoord = await geocode(m.startAddress);
-                    const endCoord = await geocode(m.endAddress);
-                    return {
-                        memberId: m.memberId,
-                        start: startCoord,
-                        end: endCoord,
-                        visited: false,
-                    };
-                }));
-
-                let currentPos = start;
-                const orderedCoords: number[][] = [start];
-
-                while (memberCoords.some(m => !m.visited)) {
-                    let nextIdx = -1;
-                    let shortest = Infinity;
-
-                    memberCoords.forEach((m, idx) => {
-                        if (!m.visited) {
-                            const dist = haversineDistance(currentPos, m.start);
-                            if (dist < shortest) {
-                                shortest = dist;
-                                nextIdx = idx;
-                            }
-                        }
-                    });
-
-                    if (nextIdx === -1) break;
-
-                    const next = memberCoords[nextIdx];
-                    orderedCoords.push(next.start);
-                    orderedCoords.push(next.end);
-                    currentPos = next.end;
-                    next.visited = true;
-
-
-                }
-
-                orderedCoords.push(end);
-
-                const res = await axios.post(
-                    `https://api.openrouteservice.org/v2/directions/driving-car/geojson`,
-                    {coordinates: orderedCoords},
-                    {
-                        headers: {
-                            Authorization: apiKey,
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-
-                setStartCoord([start[1], start[0]]);
-                setEndCoord([end[1], end[0]]);
-                setRouteCoords(res.data.features[0].geometry.coordinates.map(([lng, lat]: number[]) => [lat, lng]));
-
-                const markers = memberCoords.flatMap(m => [
-                    {type: "pickup", coords: [m.start[1], m.start[0]], memberId: m.memberId},
-                    {type: "dropoff", coords: [m.end[1], m.end[0]], memberId: m.memberId}
-                ]);
-                setMemberMarkers(markers);
-
-            } catch (err) {
-                console.error("Routing error:", err);
-            }
-        };
-
-        fetchRouteWithWaypoints();
-    }, [route, members]);
-
+    
     return (
-        <div className="bg-white min-h-screen w-screen">
+        <div className="bg-white min-h-screen w-screen overflow-x-hidden">
             <Navbar previousPage="dashboard"/>
 
             <div className="bg-white text-black m-10">
-                <p className="text-[#194569] text-4xl font-bold">
-                    Route to {route?.startAddress.city}
-                </p>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <p className="text-[#194569] text-4xl font-bold">
+                            Route to {route?.endAddress.city}
+                        </p>
 
-                <div className="mt-2">
-                    <p>Start
-                        Address: {route?.startAddress.street} {route?.startAddress.houseNumber}, {route?.startAddress.postalCode} {route?.startAddress.city}</p>
-                    <p>End
-                        Address: {route?.endAddress.street} {route?.endAddress.houseNumber}, {route?.endAddress.postalCode} {route?.endAddress.city}</p>
+                        <div className="mt-2">
+                            <p>Start
+                                Address: {route?.startAddress.street} {route?.startAddress.houseNumber}, {route?.startAddress.postalCode} {route?.startAddress.city}</p>
+                            <p>End
+                                Address: {route?.endAddress.street} {route?.endAddress.houseNumber}, {route?.endAddress.postalCode} {route?.endAddress.city}</p>
+                        </div>
+                    </div>
+                    {
+                        routeResult &&
+                        userId == routeResult.driverId &&
+                        <button
+                            onClick={deleteRoute}
+                            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 mt-5 rounded-xl"
+                        >
+                            Delete Route
+                        </button>
+
+                    }
                 </div>
 
                 <div className="grid grid-cols-2 gap-8">
-                    <div className="space-y-4 mt-6">
-                        {membersAccount.map((user, key) => {
-                            const member = members.find((m) => m.memberId === user.userId);
-                            return (
-                                <div key={key}
-                                     className="flex items-center bg-gray-100 p-4 rounded-xl shadow-sm justify-between">
-                                    <div className="flex-1">
-                                        <div className="font-semibold text-lg">
-                                            {user.firstname} {user.lastname} - {member?.endAddress.city}
+                    <div>
+                        <div className="space-y-4 mt-6">
+                            {membersAccount.map((user, key) => {
+                                const member = members.find((m) => m.memberId === user.userId);
+                                return (
+                                    <div key={key}
+                                         className="flex items-center bg-gray-100 p-4 rounded-xl shadow-sm justify-between">
+                                        <div className="flex-1">
+                                            <div className="font-semibold text-lg">
+                                                {user.firstname} {user.lastname} - {member?.endAddress.city}
+                                            </div>
+                                            <div className="text-sm text-gray-700">
+                                                Pick-up: {member?.startAddress.street} {member?.startAddress.addressId}, {member?.startAddress.postalCode} {member?.startAddress.city}
+                                            </div>
+                                            <div className="text-sm text-gray-700">
+                                                Drop-off: {member?.endAddress.street} {member?.endAddress.addressId}, {member?.endAddress.postalCode} {member?.endAddress.city}
+                                            </div>
                                         </div>
-                                        <div className="text-sm text-gray-700">
-                                            Pick-up: {member?.startAddress.street} {member?.startAddress.addressId}, {member?.startAddress.postalCode} {member?.startAddress.city}
-                                        </div>
-                                        <div className="text-sm text-gray-700">
-                                            Drop-off: {member?.endAddress.street} {member?.endAddress.addressId}, {member?.endAddress.postalCode} {member?.endAddress.city}
-                                        </div>
+                                        {
+                                            routeResult &&
+                                            userId == routeResult.driverId &&
+                                            <button
+                                                className="ml-4 px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300"
+                                                onClick={() => removeMember(member!.memberId)}
+                                            >
+                                                Remove
+                                            </button>
+                                        }
                                     </div>
-                                    <button className="ml-4 px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300">
-                                        Remove
-                                    </button>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
+                        </div>
+                        <div className="mt-14 text-black space-y-1 text-base">
+                            <p>Distance:
+                                <strong>
+                                    {routeResult ? ` ${Math.round(routeResult.distance / 1000)} km` : " Calculating..."}
+                                </strong>
+                            </p>
+                            <p>Estimated time:
+                                <strong>
+                                    {routeResult ? (Math.round(routeResult.duration / 60) >= 60 ? ` ${Math.floor(routeResult.duration / 60 / 60)} hours,` : "")
+                                        + ` ${Math.round(routeResult.duration / 60) % 60} minutes` : " Calculating..."}
+                                </strong>
+                            </p>
+                            <button className="px-4 py-2 bg-[#194569] text-white rounded-xl shadow"
+                                    onClick={exportToGoogleMaps}
+                                    disabled={!routeResult}
+                            >
+                                Export route to Google Maps
+                            </button>
+                        </div>
                     </div>
 
                     <div className="space-y-4 mt-6">
                         <MapContainer
-                            center={[47.03, 15.46]}
+                            center={startCoords}
                             zoom={12}
                             scrollWheelZoom
-                            style={{height: "500px", width: "100%", borderRadius: "1rem"}}
+                            style={{height: "550px", width: "100%", borderRadius: "1rem"}}
                         >
                             <TileLayer
                                 attribution='&copy; OpenStreetMap contributors'
@@ -239,33 +258,39 @@ function RouteDetails() {
                             {routeCoords.length > 0 && (
                                 <>
                                     <Polyline positions={routeCoords} color="blue" weight={5}/>
-                                    {startCoord && <Marker position={startCoord}/>}
-                                    {endCoord && <Marker position={endCoord}/>}
+                                    {startCoords &&
+                                        <Marker position={startCoords}>
+                                            <Popup>
+                                                Start
+                                            </Popup>
+                                        </Marker>
+                                    }
+                                    {endCoords &&
+                                        <Marker position={endCoords}>
+                                            <Popup>
+                                                Destination
+                                            </Popup>
+                                        </Marker>
+                                    }
                                 </>
                             )}
 
-                            {memberMarkers.map((m, idx) => {
-                                const user = membersAccount.find(u => u.userId === m.memberId);
-                                return (
-                                    <Marker key={idx} position={m.coords}>
-                                        <Popup>
-                                            {m.type === "pickup" ? "Pick-up" : "Drop-off"} - {user?.firstname} {user?.lastname}
-                                        </Popup>
-                                    </Marker>
-                                );
-                            })}
+                            {
+                                memberMarkers.map((m, idx) => {
+                                    const user = membersAccount.find(u => u.userId === m.memberId);
+                                    return (
+                                        <Marker key={idx} position={m.coords}>
+                                            <Popup>
+                                                {m.type === "pickup" ? "Pick-up" : "Drop-off"} - {user?.firstname} {user?.lastname}
+                                            </Popup>
+                                        </Marker>
+                                    );
+                                })
+                            }
                         </MapContainer>
                     </div>
 
-                    {/*TODO*/}
-                    <div className="mt-6 text-black space-y-1 text-base">
-                        <p>Distance: 54,43 km</p>
-                        <p>Estimated fuel consumption: 5 litres</p>
-                        <p>Estimated costs (at a price of 1,64€ per litre): <strong>8,2€</strong></p>
-                        <button className="mt-4 px-4 py-2 bg-[#194569] text-white rounded-xl" onClick={exportToGoogleMaps}>
-                            Export route to Google Maps
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>

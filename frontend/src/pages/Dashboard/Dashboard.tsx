@@ -1,11 +1,11 @@
-import React, {useState, useContext, useEffect} from "react";
+import {useState, useContext, useEffect} from "react";
 import Navbar from "../../components/Navbar.tsx";
 import RoutesCard from "../../components/RoutesCard.tsx";
 import {IoMdAdd} from "react-icons/io";
-import {Link, useNavigate} from "react-router-dom";
-import {IRoute} from "../../model/IRoute.ts";
+import {useNavigate} from "react-router-dom";
+import {IRouteContext} from "../../model/IRoute.ts";
 import {UserContext} from "../../context/UserContext.tsx";
-import {getJoinedRoutes, getRouteByJoinCode, getRoutes, routeExists} from "../../services/RouteService.ts";
+import {getJoinedRoutes, getRoutes, routeExists} from "../../services/RouteService.ts";
 import {RouteContext} from "../../context/RouteContext.tsx";
 
 /**
@@ -15,13 +15,9 @@ import {RouteContext} from "../../context/RouteContext.tsx";
 
 Dashboard.propTypes = {};
 
-interface DashboardProps {
-    title: unknown
-}
-
-function Dashboard(props) {
-    const [driverRoutes, setDriverRoutes] = useState<IRoute[]>([]);
-    const [joinRoutes, setJoinRoutes] = useState<IRoute[]>([]);
+function Dashboard() {
+    const [driverRoutes, setDriverRoutes] = useState<IRouteContext[]>([]);
+    const [joinRoutes, setJoinRoutes] = useState<IRouteContext[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [joinCode, setJoinCode] = useState("");
     const navigate = useNavigate();

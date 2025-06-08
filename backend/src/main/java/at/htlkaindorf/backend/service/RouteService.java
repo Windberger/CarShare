@@ -140,4 +140,12 @@ public class RouteService {
             return false;
         }
     }
+
+    public void deleteRoute(Long routeId) {
+        Optional<Route> route = routeRepository.findById(routeId);
+        if (route.isEmpty()) {
+            throw new ResourceNotFoundException("Route with id " + routeId + " was not found");
+        }
+        routeRepository.delete(route.get());
+    }
 }

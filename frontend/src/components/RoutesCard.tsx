@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {IRoute} from "../model/IRoute.ts";
+import {IRouteContext} from "../model/IRoute.ts";
 
 /**
  * @author Johanna Hechtl
@@ -9,7 +9,7 @@ import {IRoute} from "../model/IRoute.ts";
 
 interface RoutesCardProps {
     title: string,
-    routes: IRoute[],
+    routes: IRouteContext[],
     setModalOpen: (open: boolean) => void
 }
 

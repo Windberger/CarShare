@@ -1,10 +1,10 @@
 import {useState} from "react";
 import PasswordChecklist from "react-password-checklist"
-import {LoginUser, RegisterUser} from "../../interfaces/UserInterfaces.ts";
 import {loginUser, registerUser} from "../../services/LoginService.ts";
 import {useNavigate} from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext.tsx";
+import {ILoginUser, IRegisterUser} from "../../model/IUser.ts";
 
 /**
  * @author Johanna Hechtl
@@ -30,7 +30,7 @@ function Login() {
         e.preventDefault();
 
         if (register) {
-            const user: RegisterUser = {
+            const user: IRegisterUser = {
                 email: email,
                 firstname: firstName,
                 lastname: lastName,
@@ -52,7 +52,7 @@ function Login() {
     }
 
     const login = (email: string, password: string, setUserId: (id: number | null) => void) => {
-        const user: LoginUser = {
+        const user: ILoginUser = {
             email: email,
             password: password
         }

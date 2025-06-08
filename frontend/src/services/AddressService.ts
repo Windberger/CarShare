@@ -1,7 +1,7 @@
 import apiClient from "./ApiClient.ts";
-import {CreateAddress} from "../interfaces/AddressInterfaces.ts";
+import {ICreateAddress} from "../model/IAddress.ts";
 
-export const createAddress = async (address: CreateAddress) => {
+export const createAddress = async (address: ICreateAddress) => {
 
     const response = await apiClient.post('/address', address, {
         headers: {

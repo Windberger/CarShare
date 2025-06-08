@@ -11,6 +11,7 @@ import at.htlkaindorf.backend.repositories.AddressRepository;
 import at.htlkaindorf.backend.repositories.RouteMemberRepository;
 import at.htlkaindorf.backend.repositories.RouteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * @since 12.05.2025
  */
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RouteMemberService {
@@ -75,7 +77,8 @@ public class RouteMemberService {
         ) {
 
             if (routeMember.getMemberId().equals(memberId)) {
-                routeMemberRepository.delete(routeMemberDetailMapper.toEntity(routeMember));
+                log.info("Removing route member with ID: {}", memberId);
+                routeMemberRepository.deleteByRouteIdAndMemberId(routeId, memberId);
                 return routeMember;
             }
 

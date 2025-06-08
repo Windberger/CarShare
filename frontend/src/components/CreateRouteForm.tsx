@@ -2,12 +2,12 @@ import React, {useMemo, useState, useContext} from 'react';
 import Navbar from "./Navbar.tsx";
 import Select, {SingleValue} from 'react-select'
 import countryList from "react-select-country-list";
-import {CreateAddress} from "../interfaces/AddressInterfaces.ts";
 import {createAddress} from "../services/AddressService.ts";
 import {UserContext} from "../context/UserContext.tsx";
 import {createRoute} from "../services/RouteService.ts";
-import {CreateRoute} from "../interfaces/RouteInterfaces.ts";
 import {useNavigate} from "react-router-dom";
+import {ICreateAddress} from "../model/IAddress.ts";
+import {ICreateRoute} from "../model/IRoute.ts";
 
 
 type CountryOption = {
@@ -16,7 +16,7 @@ type CountryOption = {
 };
 
 function CreateRouteForm() {
-    const [startAddress, setStartAddress] = useState<CreateAddress>({
+    const [startAddress, setStartAddress] = useState<ICreateAddress>({
         country: '',
         postalCode: '',
         city: '',
@@ -24,7 +24,7 @@ function CreateRouteForm() {
         houseNumber: ''
     });
 
-    const [destinationAddress, setDestinationAddress] = useState<CreateAddress>({
+    const [destinationAddress, setDestinationAddress] = useState<ICreateAddress>({
         country: '',
         postalCode: '',
         city: '',
@@ -61,7 +61,7 @@ function CreateRouteForm() {
                 if (startAddressId && destinationAddressId && userId) {
                     const datetime = `${startDate}T${startTime}`
 
-                    const route: CreateRoute = {
+                    const route: ICreateRoute = {
                         startAddressId: startAddressId,
                         endAddressId: destinationAddressId,
                         startTime: datetime,
@@ -69,6 +69,7 @@ function CreateRouteForm() {
                     }
                     createRoute(route).then((data) => {
                         console.log(data);
+                        navigate(`/detailRoute/${data}`)
                     }).catch((error) => {
                         if (error.status == 403) {
                             alert("This route already exists!");
@@ -218,8 +219,8 @@ function CreateRouteForm() {
                     <div className="flex justify-center">
                         <button
                             type="submit"
-                            className="px-6 py-2 bg-[#194569] text-white rounded-xl shadow hover:bg-[#163a57] transition"
-                            onClick={() => navigate('/dashboard')}
+                            className="px-4 py-2 bg-[#194569] text-white rounded-3xl shadow"
+                            onClick={handleSubmit}
                         >
                             Create Carpool
                         </button>

@@ -1,7 +1,7 @@
 import apiClient from "./ApiClient.ts";
-import {CreateAddress} from "../interfaces/AddressInterfaces.ts";
+import {ICreateAddress} from "../model/IAddress.ts";
 
-export const createRouteMember = async (joinCode: string, userId: number, startAddress: CreateAddress, endAddress: CreateAddress) => {
+export const createRouteMember = async (joinCode: string, userId: number, startAddress: ICreateAddress, endAddress: ICreateAddress) => {
     return await apiClient.post('/routeMembers/addRouteMember', {
         joinCode,
         userId,
@@ -15,7 +15,7 @@ export const createRouteMember = async (joinCode: string, userId: number, startA
     });
 };
 
-export const getRouteMembers = async (routeId: number)=>{
+export const getRouteMembers = async (routeId: number) => {
     const response =  await apiClient.get(`/routeMembers/getMembersOfRoute/${routeId}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -24,5 +24,15 @@ export const getRouteMembers = async (routeId: number)=>{
     });
 
     return response.data;
+}
 
+export const removeRouteMember = async (routeId: number, memberId: number) => {
+    const response =  await apiClient.delete(`/routeMembers/removeMemberOfRoute/${routeId}/${memberId}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+
+    return response.data;
 }

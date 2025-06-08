@@ -2,14 +2,13 @@ import React, {useMemo, useState, useContext, useEffect} from 'react';
 import Navbar from "./Navbar.tsx";
 import Select, {SingleValue} from 'react-select'
 import countryList from "react-select-country-list";
-import {CreateAddress} from "../interfaces/AddressInterfaces.ts";
-import {createAddress} from "../services/AddressService.ts";
 import {UserContext} from "../context/UserContext.tsx";
-import {createRoute, getRouteByJoinCode} from "../services/RouteService.ts";
-import {CreateRoute, Route} from "../interfaces/RouteInterfaces.ts";
+import {getRouteByJoinCode} from "../services/RouteService.ts";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import {createRouteMember} from "../services/RouteMemberService.ts";
+import {IRoute} from "../model/IRoute.ts";
+import {ICreateAddress} from "../model/IAddress.ts";
 
 type CountryOption = {
     label: string;
@@ -19,7 +18,7 @@ type CountryOption = {
 function JoinRouteForm() {
 
     const {joinCode} = useParams();
-    const [startAddress, setStartAddress] = useState<CreateAddress>({
+    const [startAddress, setStartAddress] = useState<ICreateAddress>({
         country: '',
         postalCode: '',
         city: '',
@@ -27,7 +26,7 @@ function JoinRouteForm() {
         houseNumber: ''
     });
 
-    const [destinationAddress, setDestinationAddress] = useState<CreateAddress>({
+    const [destinationAddress, setDestinationAddress] = useState<ICreateAddress>({
         country: '',
         postalCode: '',
         city: '',
@@ -37,7 +36,7 @@ function JoinRouteForm() {
 
     const [startCountry, setStartCountry] = useState<CountryOption | null>(null);
     const [destinationCountry, setDestinationCountry] = useState<CountryOption | null>(null);
-    const [routeData, setRouteData] = useState<Route>()
+    const [routeData, setRouteData] = useState<IRoute>()
     const [dateString, setDateString] = useState<string>("");
     const navigate = useNavigate();
 
@@ -55,15 +54,15 @@ function JoinRouteForm() {
 
     const loadRoute = (joinCode: string) => {
         getRouteByJoinCode(joinCode)
-            .then((route: Route) => {
-                const newStartAddress: CreateAddress = {
+            .then((route: IRoute) => {
+                const newStartAddress: ICreateAddress = {
                     country: route.startAddress.country,
-                    postalCode: route.startAddress.postalCode,
+                    postalCode: route.startAddress.postalCode as string,
                     city: route.startAddress.city,
                     street: route.startAddress.street,
                     houseNumber: route.startAddress.houseNumber
                 };
-                const newDestinationAddress: CreateAddress = {
+                const newDestinationAddress: ICreateAddress = {
                     country: route.endAddress.country,
                     postalCode: route.endAddress.postalCode,
                     city: route.endAddress.city,
@@ -222,7 +221,7 @@ function JoinRouteForm() {
                     <div className="flex justify-center">
                         <button
                             type="submit"
-                            className="px-6 py-2 bg-[#194569] text-white rounded-full shadow hover:bg-[#163a57] transition mr-3"
+                            className="px-6 py-2 bg-[#194569] text-white rounded-xl shadow hover:bg-[#163a57] transition mr-3"
                         >
                             Join Route
                         </button>

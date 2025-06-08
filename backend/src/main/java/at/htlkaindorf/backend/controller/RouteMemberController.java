@@ -66,8 +66,6 @@ public class RouteMemberController {
         RouteMemberDetailDTO routeMember = routeMemberService.removeMemberOfRoute(routeId,memberId);
 
         return ResponseEntity.ok(routeMember);
-
-
     }
 
 
