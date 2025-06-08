@@ -1,4 +1,8 @@
 FROM openjdk:17-jdk-slim
-ARG JAR_FILE=*.jar
-COPY ${JAR_FILE} application.jar
-ENTRYPOINT ["java", "-jar", "application.jar"]
+WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8080
+RUN ls -la target
+CMD sh -c 'java -jar target/*.jar'
