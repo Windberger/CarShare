@@ -69,6 +69,9 @@ function CreateRouteForm() {
                     }
                     createRoute(route).then((data) => {
                         console.log(data);
+
+
+
                         navigate(`/detailRoute/${data}`)
                     }).catch((error) => {
                         if (error.status == 403) {

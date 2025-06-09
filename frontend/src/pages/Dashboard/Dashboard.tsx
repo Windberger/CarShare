@@ -6,7 +6,6 @@ import {useNavigate} from "react-router-dom";
 import {IRouteContext} from "../../model/IRoute.ts";
 import {UserContext} from "../../context/UserContext.tsx";
 import {getJoinedRoutes, getRoutes, routeExists} from "../../services/RouteService.ts";
-import {RouteContext} from "../../context/RouteContext.tsx";
 
 /**
  * @author Johanna Hechtl
@@ -23,12 +22,10 @@ function Dashboard() {
     const navigate = useNavigate();
 
     const userContext = useContext(UserContext);
-    const routeContext = useContext(RouteContext);
-    if (!userContext || !routeContext) {
+    if (!userContext) {
         throw new Error("Context not found");
     }
     const {userId} = userContext;
-    const {setRecentRoutes, setJoinedRoutes} = routeContext;
 
 
     const getRoutesForCards = (userId: number | null) => {
@@ -40,7 +37,6 @@ function Dashboard() {
         getRoutes(userId)
             .then((routes) => {
                 setDriverRoutes(routes);
-                setRecentRoutes(routes);
             })
             .catch((error) => {
                 console.error("Error fetching driver routes:", error);
@@ -49,7 +45,6 @@ function Dashboard() {
         getJoinedRoutes(userId)
             .then((routes) => {
                 setJoinRoutes(routes);
-                setJoinedRoutes(routes);
             })
             .catch((error) => {
                 console.error("Error fetching joined routes:", error);

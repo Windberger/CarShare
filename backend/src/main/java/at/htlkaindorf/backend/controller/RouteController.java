@@ -26,6 +26,12 @@ public class RouteController {
 
     private final RouteService routeService;
 
+    @GetMapping("/{routeId}")
+    public ResponseEntity<RouteDTO> getRouteById(@PathVariable Long routeId) {
+
+        return ResponseEntity.ok(routeService.getRouteById(routeId));
+    }
+
     @GetMapping("/driverRoutes")
     public ResponseEntity<Iterable<RouteDTO>> getAllDriverRoutes(
             @RequestParam Long userId
@@ -59,13 +65,6 @@ public class RouteController {
             @RequestBody CreateRouteDTO routeDTO
     ) {
         return ResponseEntity.ok(routeService.createRoute(routeDTO));
-    }
-
-    @GetMapping("/getRoute")
-    public ResponseEntity<RouteDetailDTO> getRouteById(@RequestParam Long id){
-
-        return ResponseEntity.ok(routeService.getRouteById(id));
-
     }
 
     @DeleteMapping("/deleteRoute/{routeId}")

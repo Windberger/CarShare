@@ -46,7 +46,12 @@ public class OpenRouteService {
                 .toUriString();
         log.info(uri);
 
-        ResponseEntity<JsonNode> response = restTemplate.exchange(uri, HttpMethod.GET, null, JsonNode.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept-Language", "de-DE");
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<JsonNode> response = restTemplate.exchange(uri, HttpMethod.GET, entity, JsonNode.class);
 
         if (response.getBody() == null || response.getStatusCode() != HttpStatus.OK) {
             throw new RouteException("Error while requesting coordinates: " + response.getHeaders());
@@ -56,6 +61,7 @@ public class OpenRouteService {
                 .get(0)
                 .path("geometry")
                 .path("coordinates");
+        log.info(response.getBody().toString());
 
         CoordinateAddress coordinateAddress = new CoordinateAddress(
                 address.getAddressId(),

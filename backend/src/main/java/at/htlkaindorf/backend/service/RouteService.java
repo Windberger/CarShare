@@ -120,16 +120,15 @@ public class RouteService {
      * sucht Routen die man für die Detailansicht einer Route braucht
      * Dashboard --> click auf eine Route --> Detailansicht
      */
-    public RouteDetailDTO getRouteById(Long id) {
+    public RouteDTO getRouteById(Long id) {
 
         Optional<Route> route = routeRepository.findById(id);
 
         if (route.isEmpty()) {
             throw new ResourceNotFoundException("Route with id " + id + " was not found");
-
         }
 
-        return routeDetailMapper.toDto(route.get());
+        return routeMapper.toDto(route.get());
     }
 
     public Boolean routeExisting(String joinCode) {

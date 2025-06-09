@@ -35,6 +35,8 @@ function JoinRouteForm() {
     });
 
     const [startCountry, setStartCountry] = useState<CountryOption | null>(null);
+    const [startCity, setStartCity] = useState("");
+    const [destinationCity, setDestinationCity] = useState("");
     const [destinationCountry, setDestinationCountry] = useState<CountryOption | null>(null);
     const [routeData, setRouteData] = useState<IRoute>()
     const [dateString, setDateString] = useState<string>("");
@@ -75,6 +77,9 @@ function JoinRouteForm() {
                 setDestinationAddress(newDestinationAddress);
                 setStartCountry({label: newStartAddress.country, value: newStartAddress.country});
                 setDestinationCountry({label: newDestinationAddress.country, value: newDestinationAddress.country});
+                setStartCity(route.startAddress.city);
+                setDestinationCity(route.endAddress.city);
+
                 const formatted = new Intl.DateTimeFormat("de-DE", {
                     day: "2-digit",
                     month: "2-digit",
@@ -207,7 +212,7 @@ function JoinRouteForm() {
                     className="bg-white w-full max-w-3xl mx-auto p-10 rounded-xl shadow-md"
                 >
                     <h2 className="text-3xl font-bold text-[#194569] mb-4">Route
-                        from {startAddress.city} to {startAddress.city}</h2>
+                        from {startCity} to {destinationCity}</h2>
 
                     {routeData &&
                         <p className="text-black mb-4 text-xl">

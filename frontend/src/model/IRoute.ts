@@ -1,5 +1,6 @@
 import {IAddress, ICoordinateAddress} from "./IAddress.ts";
 import {IUser} from "./IUser.ts";
+import {IMember} from "./IMember.ts";
 
 
 export interface IRouteContext {
