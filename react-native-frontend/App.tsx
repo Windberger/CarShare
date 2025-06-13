@@ -25,9 +25,9 @@ export default function App() {
     return (
         <UserProvider>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Login">
+                <Stack.Navigator initialRouteName="Homepage">
                     <Stack.Screen name="Login" component={Login}/>
-                    {/*<Stack.Screen name="Homepage" component={Homepage} />*/}
+                    <Stack.Screen name="Homepage" component={Homepage} />
                     <Stack.Screen name="Dashboard" component={Dashboard}/>
                     {/*<Stack.Screen name="CreateCarpool" component={CreateRouteForm} />*/}
                     <Stack.Screen name="DetailRoute" component={RouteDetails} />

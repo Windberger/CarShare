@@ -24,20 +24,20 @@ export default function LeafletMap({ routeCoords, startCoords, endCoords, member
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             {routeCoords.length > 0 && (
-                <Polyline positions={routeCoords.map(c => [c.latitude, c.longitude])} color="#194569" />
+                <Polyline positions={routeCoords.map(c => [c.longitude, c.latitude])} color="#194569" />
             )}
-            <Marker position={[startCoords.latitude, startCoords.longitude]}>
+            <Marker position={[startCoords.longitude, startCoords.latitude]}>
                 <Popup>Start</Popup>
             </Marker>
             {endCoords && (
-                <Marker position={[endCoords.latitude, endCoords.longitude]}>
+                <Marker position={[endCoords.longitude, endCoords.latitude]}>
                     <Popup>Ziel</Popup>
                 </Marker>
             )}
             {memberMarkers.map((m, idx) => {
                 const user = membersAccount?.find(u => u.userId === m.memberId);
                 return (
-                    <Marker key={idx} position={[m.coords.latitude, m.coords.longitude]}>
+                    <Marker key={idx} position={[m.coords.longitude, m.coords.latitude]}>
                         <Popup>
                             {m.type === "pickup" ? "Pick-up" : "Drop-off"}
                             {user ? `: ${user.firstname} ${user.lastname}` : ""}

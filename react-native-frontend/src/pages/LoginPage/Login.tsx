@@ -224,6 +224,7 @@ const styles = StyleSheet.create({
         color: "#000",
         borderWidth: 1,
         borderColor: "#e5e7eb",
+
     },
     button: {
         backgroundColor: "#194569",

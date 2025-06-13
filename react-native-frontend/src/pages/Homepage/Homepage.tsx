@@ -12,7 +12,7 @@ export default function Homepage() {
                 <Text style={styles.logo}>CarShare</Text>
                 <TouchableOpacity
                     style={styles.loginButton}
-                    onPress={() => navigation.navigate('login')}
+                    onPress={() => navigation.navigate('Login')}
                 >
                     <Text style={styles.loginText}>Login</Text>
                 </TouchableOpacity>
@@ -24,7 +24,7 @@ export default function Homepage() {
                 <Text style={styles.heroSubtitle}>Save money, reduce emissions, and travel smarter.</Text>
                 <TouchableOpacity
                     style={styles.getStartedButton}
-                    onPress={() => navigation.navigate('login')}
+                    onPress={() => navigation.navigate('Login')}
                 >
                     <Text style={styles.getStartedText}>Get Started</Text>
                 </TouchableOpacity>
