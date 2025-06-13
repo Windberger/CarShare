@@ -1,172 +1,262 @@
-import {useState} from "react";
-import PasswordChecklist from "react-password-checklist"
-import {loginUser, registerUser} from "../../services/LoginService.ts";
-import {useNavigate} from "react-router-dom";
-import { useContext } from "react";
-import { UserContext } from "../../context/UserContext.tsx";
-import {ILoginUser, IRegisterUser} from "../../model/IUser.ts";
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Image,
+    Alert,
+    StyleSheet,
+    ScrollView
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { loginUser, registerUser } from "../../services/LoginService";
+import { useUser } from "../../context/UserContext";
 
-/**
- * @author Johanna Hechtl
- * @since 03.03.2025
- */
-function Login() {
+export default function Login() {
     const [register, setRegister] = useState(false);
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [isPasswordValid, setIsPasswordValid] = useState(false);
-    const navigate = useNavigate();
-    const { setUserId } =  useContext(UserContext)!;
+    const navigation = useNavigation<any>();
+    const { setUserId } = useUser();
 
     const isEmailValid = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const isPasswordValid =
+        password.length >= 8 &&
+        /[0-9]/.test(password) &&
+        /[^A-Za-z0-9]/.test(password) &&
+        password === repeatPassword;
 
+    const handleSubmit = () => {
         if (register) {
-            const user: IRegisterUser = {
-                email: email,
+            const user = {
+                email,
                 firstname: firstName,
                 lastname: lastName,
-                password: password
-            }
-            
+                password
+            };
             registerUser(user, setUserId)
                 .then((res) => {
-                    setUserId(res)
-                    login(email, password, setUserId)
-                }).catch((err) => {
-                console.log(err);
-                alert("User registration failed");
-            });
-
+                    setUserId(res);
+                    login(email, password);
+                })
+                .catch(() => {
+                    Alert.alert("Signup failed");
+                });
         } else {
-            login(email, password, setUserId)
+            login(email, password);
         }
-    }
+    };
 
-    const login = (email: string, password: string, setUserId: (id: number | null) => void) => {
-        const user: ILoginUser = {
-            email: email,
-            password: password
-        }
-        loginUser(user, setUserId)
+    const login = (email: string, password: string) => {
+        loginUser({ email, password }, setUserId)
             .then((res) => {
-                setUserId(res)
-                navigate("/dashboard");
-            }).catch((err) => {
-            console.log(err);
-            alert("User login failed");
-        });
-    }
+                Alert.alert(res);
+                setUserId(res);
 
+                navigation.navigate("Dashboard");
+            })
+            .catch(() => {
+                Alert.alert("Login failed");
+            });
+    };
 
     return (
-        <div className="flex h-screen w-screen bg-white">
-            <div className="w-1/2 flex justify-center items-center">
-                <div className="w-full max-w-md p-8">
-                    <h1 className="text-4xl font-bold mb-10 text-[#194569] text-center">{register ? "Register" : "Login"}</h1>
-                    <form onSubmit={handleSubmit}>
-                        {register && (
-                            <div className="flex space-x-2 mb-7">
-                                <input
-                                    type="text"
-                                    name="firstName"
-                                    placeholder="Firstname"
-                                    className="w-1/2 p-3 bg-gray-50 border text-black rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                    onChange={e => setFirstName(e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    name="lastName"
-                                    placeholder="Lastname"
-                                    className="w-1/2 p-3  bg-gray-50 text-black  border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                    onChange={e => setLastName(e.target.value)}
-                                />
-                            </div>
-                        )}
-                        <div className="mb-7">
-                            <input type="email" id="email" name="email" placeholder={"Email"}
-                                   className="w-full h-12  bg-gray-50 text-black  border rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                   autoComplete="off"
-                                   onChange={e => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <input type="password" id="password" name="password" placeholder={"Password"}
-                                   className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                   autoComplete="off"
-                                   onChange={e => setPassword(e.target.value)}/>
-                        </div>
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.left}>
+                <Text style={styles.title}>{register ? "Register" : "Login"}</Text>
+                {register && (
+                    <View style={styles.row}>
+                        <TextInput
+                            style={styles.inputHalf}
+                            placeholder="Firstname"
+                            value={firstName}
+                            onChangeText={setFirstName}
+                        />
+                        <TextInput
+                            style={styles.inputHalf}
+                            placeholder="Lastname"
+                            value={lastName}
+                            onChangeText={setLastName}
+                        />
+                    </View>
+                )}
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    onChangeText={setEmail}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    value={password}
+                    secureTextEntry
+                    onChangeText={setPassword}
+                />
+                {register && (
+                    <>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Repeat Password"
+                            value={repeatPassword}
+                            secureTextEntry
+                            onChangeText={setRepeatPassword}
+                        />
+                        <View>
+                            <Text style={{ color: password.length >= 8 ? "green" : "red" }}>
+                                • Has 8 digits
+                            </Text>
+                            <Text style={{ color: /[0-9]/.test(password) ? "green" : "red" }}>
+                                • Has a number
+                            </Text>
+                            <Text style={{ color: /[^A-Za-z0-9]/.test(password) ? "green" : "red" }}>
+                                • Has a special value
+                            </Text>
+                            <Text
+                                style={{
+                                    color:
+                                        password === repeatPassword && password !== "" ? "green" : "red"
+                                }}
+                            >
+                                • Passwords are the same
+                            </Text>
+                        </View>
+                    </>
+                )}
+                <TouchableOpacity
+                    style={[
+                        styles.button,
+                        (register
+                            ? !isPasswordValid ||
+                            !isEmailValid(email) ||
+                            !firstName.trim() ||
+                            !lastName.trim()
+                            : !isEmailValid(email) || !password.trim()) && styles.buttonDisabled
+                    ]}
+                    onPress={handleSubmit}
+                    disabled={
+                        register
+                            ? !isPasswordValid ||
+                            !isEmailValid(email) ||
+                            !firstName.trim() ||
+                            !lastName.trim()
+                            : !isEmailValid(email) || !password.trim()
+                    }
+                >
+                    <Text style={styles.buttonText}>
+                        {register ? "Register" : "Login"}
+                    </Text>
+                </TouchableOpacity>
+                <View style={styles.switchRow}>
+                    <Text style={styles.switchText}>
+                        {register ? "Already registered?" : "Not registered?"}
+                    </Text>
+                    <TouchableOpacity onPress={() => setRegister(!register)}>
+                        <Text style={styles.switchLink}>
+                            {register ? "Login" : "Register"}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
-
-                        {register && (
-                            <>
-                                <div className="mb-4">
-                                    <input type="password" id="repeat-password" name="repeat-password"
-                                           placeholder={"Repeat Password"}
-                                           className="w-full h-12 bg-gray-50 border text-black  rounded-xl py-2 px-3 focus:outline-none focus:ring-2 focus:ring-[#194569]"
-                                           autoComplete="off"
-                                           onChange={e => setRepeatPassword(e.target.value)}/>
-                                </div>
-                                <div className="mb-10 flex items-center">
-
-                                    <PasswordChecklist className={"text-black"}
-                                                       rules={["minLength", "specialChar", "number", "match"]}
-                                                       minLength={8}
-                                                       value={password}
-                                                       valueAgain={repeatPassword}
-                                                       onChange={(isValid: never) => setIsPasswordValid(isValid)}
-                                                       iconSize="10"
-
-
-                                    />
-                                </div>
-
-                            </>
-
-                        )}
-
-                        {/*{!register && (*/}
-                        {/*    <div className="mb-10 flex items-center">*/}
-                        {/*        <input type="checkbox" id="remember" name="remember"/>*/}
-                        {/*        <label htmlFor="remember" className="text-[#194569]  ml-2">Remember Me</label>*/}
-                        {/*    </div>*/}
-                        {/*)}*/}
-
-                        <button
-                            type="submit"
-                            className="bg-[#194569] text-white font-semibold rounded-xl p-3 w-full disabled:bg-gray-300 disabled:cursor-not-allowed"
-                            disabled={
-                                register
-                                    ? !isPasswordValid || !isEmailValid(email) || !firstName.trim() || !lastName.trim()
-                                    : !isEmailValid(email) || !password.trim()
-                            }
-                        >
-                            {register ? "Register" : "Login"}
-                        </button>
-                    </form>
-                    <div className="mt-6 text-[#194569] text-center">
-                        <label>{register ? "Already have an Account?" : "No Account yet?"}</label>
-                        <a href="#" onClick={() => setRegister(!register)}
-                           className="hover:underline ml-1">{register ? "Login" : "Register"}</a>
-                    </div>
-                </div>
-            </div>
-
-            <div className="w-1/2 overflow-hidden">
-                <img src="/src/assets/login_img.png"
-                     alt="Placeholder Image"
-                     className="object-cover w-full h-full"/>
-            </div>
-        </div>
+        </ScrollView>
     );
 }
 
-export default Login;
+const styles = StyleSheet.create({
+    container: {
+        flexGrow: 1,
+        flexDirection: "row",
+        backgroundColor: "#fff",
+        minHeight: "100%",
+    },
+    left: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 24,
+    },
+    right: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    title: {
+        fontSize: 32,
+        fontWeight: "bold",
+        color: "#194569",
+        marginBottom: 32,
+        textAlign: "center",
+    },
+    row: {
+        flexDirection: "row",
+        width: "100%",
+        marginBottom: 16,
+    },
+    input: {
+        width: "100%",
+        height: 48,
+        backgroundColor: "#f3f4f6",
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        marginBottom: 16,
+        color: "#000",
+        borderWidth: 1,
+        borderColor: "#e5e7eb",
+    },
+    inputHalf: {
+        flex: 1,
+        height: 48,
+        backgroundColor: "#f3f4f6",
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        marginRight: 8,
+        color: "#000",
+        borderWidth: 1,
+        borderColor: "#e5e7eb",
+    },
+    button: {
+        backgroundColor: "#194569",
+        borderRadius: 12,
+        paddingVertical: 14,
+        alignItems: "center",
+        marginTop: 8,
+        marginBottom: 16,
+        width: "100%",
+    },
+    buttonDisabled: {
+        backgroundColor: "#d1d5db",
+    },
+    buttonText: {
+        color: "#fff",
+        fontWeight: "bold",
+        fontSize: 18,
+    },
+    switchRow: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    switchText: {
+        color: "#194569",
+    },
+    switchLink: {
+        color: "#194569",
+        marginLeft: 8,
+        textDecorationLine: "underline",
+    },
+    image: {
+        width: "100%",
+        height: 350,
+    },
+});
