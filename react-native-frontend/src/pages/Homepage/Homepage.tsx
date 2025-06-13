@@ -1,59 +1,179 @@
-import {Link} from "react-router-dom";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-function Homepage() {
+export default function Homepage() {
+    const navigation = useNavigation();
+
     return (
-        <div className="bg-gray-100 min-h-screen flex flex-col justify-between w-screen">
+        <ScrollView style={styles.container}>
             {/* Navbar */}
-            <nav className="bg-[#194569] text-white p-4 flex justify-between items-center">
-                <h1 className="text-xl font-bold">CarShare</h1>
-                <ul className="flex space-x-4">
-                    <li><a href="#features" className="hover:underline">Features</a></li>
-                    <li><a href="#testimonials" className="hover:underline">Testimonials</a></li>
-                    <li><a href="#contact" className="hover:underline">Contact</a></li>
-                </ul>
-                <div>
-                    <Link className="bg-white text-[#194569] px-4 py-2 rounded mr-2" to="/login">Login</Link>
-                </div>
-            </nav>
+            <View style={styles.navbar}>
+                <Text style={styles.logo}>CarShare</Text>
+                <TouchableOpacity
+                    style={styles.loginButton}
+                    onPress={() => navigation.navigate('login')}
+                >
+                    <Text style={styles.loginText}>Login</Text>
+                </TouchableOpacity>
+            </View>
 
             {/* Hero Section */}
-            <header className="bg-[#194569] text-white py-32 text-center flex flex-col items-center">
-                <h2 className="text-3xl font-bold">Create Carpools with Your Friends</h2>
-                <p className="mt-2">Save money, reduce emissions, and travel smarter.</p>
-                <Link className="mt-4 px-6 py-2 bg-white text-[#194569] font-bold rounded" to="/login">Get Started</Link>
-            </header>
+            <View style={styles.hero}>
+                <Text style={styles.heroTitle}>Create Carpools with Your Friends</Text>
+                <Text style={styles.heroSubtitle}>Save money, reduce emissions, and travel smarter.</Text>
+                <TouchableOpacity
+                    style={styles.getStartedButton}
+                    onPress={() => navigation.navigate('login')}
+                >
+                    <Text style={styles.getStartedText}>Get Started</Text>
+                </TouchableOpacity>
+            </View>
 
             {/* Features Section */}
-            <section id="features" className="py-20 text-center text-black">
-                <h3 className="text-2xl font-bold">Why Use CarShare?</h3>
-                <div className="mt-6 flex justify-center space-x-6">
-                    <div className="p-4 bg-white shadow-lg rounded-2xl w-1/4">
-                        <h4 className="font-semibold">Save Money</h4>
-                        <p>Split fuel costs with friends.</p>
-                    </div>
-                    <div className="p-4 bg-white shadow-lg rounded-2xl w-1/4">
-                        <h4 className="font-semibold">Eco-Friendly</h4>
-                        <p>Reduce CO₂ emissions by sharing rides.</p>
-                    </div>
-                    <div className="p-4 bg-white shadow-lg rounded-2xl w-1/4">
-                        <h4 className="font-semibold">Easy to Use</h4>
-                        <p>Plan and track rides effortlessly.</p>
-                    </div>
-                </div>
-            </section>
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Why Use CarShare?</Text>
+                <View style={styles.features}>
+                    <View style={styles.featureCard}>
+                        <Text style={styles.featureTitle}>Save Money</Text>
+                        <Text>Split fuel costs with friends.</Text>
+                    </View>
+                    <View style={styles.featureCard}>
+                        <Text style={styles.featureTitle}>Eco-Friendly</Text>
+                        <Text>Reduce CO₂ emissions by sharing rides.</Text>
+                    </View>
+                    <View style={styles.featureCard}>
+                        <Text style={styles.featureTitle}>Easy to Use</Text>
+                        <Text>Plan and track rides effortlessly.</Text>
+                    </View>
+                </View>
+            </View>
 
             {/* Testimonials */}
-            <section id="testimonials" className="py-20 bg-gray-200 text-center text-black">
-                <h3 className="text-2xl font-bold">What Our Users Say</h3>
-                <p className="mt-4 italic">"This app has saved me so much money on commuting!" – Alex</p>
-            </section>
+            <View style={styles.testimonials}>
+                <Text style={styles.sectionTitle}>What Our Users Say</Text>
+                <Text style={styles.testimonial}>"This app has saved me so much money on commuting!" – Alex</Text>
+            </View>
 
             {/* Footer */}
-            <footer id="contact" className="bg-[#194569] text-white py-6 text-center">
-                <p>&copy; 2025 CarShare. All rights reserved.</p>
-            </footer>
-        </div>
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>© 2025 CarShare. All rights reserved.</Text>
+            </View>
+        </ScrollView>
     );
 }
 
-export default Homepage;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#f3f4f6',
+    },
+    navbar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: '#194569',
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+    },
+    logo: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginBottom: 8,
+    },
+    navLinks: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 12,
+    },
+    navText: {
+        color: 'white',
+        textDecorationLine: 'underline',
+    },
+    loginButton: {
+        backgroundColor: 'white',
+        paddingHorizontal: 16,
+        paddingVertical: 6,
+        borderRadius: 6,
+        alignSelf: 'flex-end',
+    },
+    loginText: {
+        color: '#194569',
+        fontWeight: 'bold',
+    },
+    hero: {
+        backgroundColor: '#194569',
+        alignItems: 'center',
+        paddingVertical: 60,
+        paddingHorizontal: 20,
+    },
+    heroTitle: {
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    heroSubtitle: {
+        color: 'white',
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    getStartedButton: {
+        backgroundColor: 'white',
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 6,
+        marginTop: 20,
+    },
+    getStartedText: {
+        color: '#194569',
+        fontWeight: 'bold',
+    },
+    section: {
+        padding: 20,
+        marginBottom: 50,
+    },
+    sectionTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    features: {
+        flexDirection: 'column',
+        gap: 16,
+    },
+    featureCard: {
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 16,
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    featureTitle: {
+        fontWeight: '600',
+        marginBottom: 6,
+    },
+    testimonials: {
+        backgroundColor: '#e5e7eb',
+        padding: 20,
+        alignItems: 'center',
+    },
+    testimonial: {
+        marginTop: 10,
+        fontStyle: 'italic',
+        textAlign: 'center',
+    },
+    footer: {
+        backgroundColor: '#194569',
+        padding: 16,
+        alignItems: 'center',
+    },
+    footerText: {
+        color: 'white',
+    },
+});
