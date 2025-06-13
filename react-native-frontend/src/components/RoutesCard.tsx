@@ -1,65 +1,107 @@
-import {useNavigate} from "react-router-dom";
-import {IRouteContext} from "../model/IRoute.ts";
-
-/**
- * @author Johanna Hechtl
- * @since 22.04.2025
- */
-
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { IRouteContext } from "../model/IRoute";
 
 interface RoutesCardProps {
-    title: string,
-    routes: IRouteContext[],
-    setModalOpen: (open: boolean) => void
+    title: string;
+    routes: IRouteContext[];
+    setModalOpen: (open: boolean) => void;
 }
 
-function RoutesCard({title, routes, setModalOpen}: RoutesCardProps) {
-    const navigate = useNavigate();
-
+const RoutesCard: React.FC<RoutesCardProps> = ({ title, routes, setModalOpen }) => {
+    const navigation = useNavigation<any>();
+    console.log("Routes für", title, routes);
 
     function handleClick(id: number) {
-        navigate(`/detailRoute/${id}`);
+        navigation.navigate("DetailRoute", { id });
     }
 
     return (
-        <div className={"p-4 m-8"}>
-            <h2 className="text-[#194569] text-xl font-semibold mb-2">{title}</h2>
-
-            {
-                routes.length == 0 &&
-                <div className="text-black">
-                    {title === "Recent Routes" ?
-                        <div>
-                            <div>You don't have created a route yet</div>
-                            <a onClick={() => navigate('/createCarpool')} className="cursor-pointer">Create a new
-                                route</a>
-                        </div>
-                        :
-                        <div>
-                            <div>You haven't joined a route yet</div>
-                            <a onClick={() => setModalOpen(true)} className="cursor-pointer">Join a route</a>
-                        </div>
-                    }
-                </div>
-            }
-            {
-                routes.length != 0 &&
-                <div className="p-4 border-2 hover:border-[#194569]  hover:shadow-2xl rounded-xl shadow-xl text-black">
-                    {routes.map((route, key) => (
-                        <div key={key} className={"bg-gray-100 m-2 p-2 rounded-xl flex justify-between items-center cursor-pointer hover:scale-105"}
-                             onClick={() => handleClick(route.routeId)}>
-                            <div
-                                className={"w-[300px] truncate  "}>From {route.startAddress.city} to {route.endAddress.city}
-                            </div>
-                            <div className={"text-right whitespace-nowrap"}>
-                                Join Code: {route.joinCode}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            }
-        </div>
+        <View style={styles.cardContainer}>
+            <Text style={styles.cardTitle}>{title}</Text>
+            {routes.length === 0 ? (
+                <View>
+                    {title === "Recent Routes" ? (
+                        <View>
+                            <Text style={styles.infoText}>You don't have created a route yet</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("CreateCarpool")}>
+                                <Text style={styles.link}>Create a new route</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View>
+                            <Text style={styles.infoText}>You haven't joined a route yet</Text>
+                            <TouchableOpacity onPress={() => setModalOpen(true)}>
+                                <Text style={styles.link}>Join a route</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            ) : (
+                <FlatList
+                    data={routes}
+                    keyExtractor={(_, idx) => idx.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.routeItem}
+                            onPress={() => handleClick(item.routeId)}
+                        >
+                            <Text style={styles.routeText}>
+                                From {item.startAddress.city} to {item.endAddress.city}
+                            </Text>
+                            <Text style={styles.joinCode}>Join Code: {item.joinCode}</Text>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
+        </View>
     );
-}
+};
+
+const styles = StyleSheet.create({
+    cardContainer: {
+        backgroundColor: "#f3f4f6",
+        borderRadius: 12,
+        padding: 16,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    cardTitle: {
+        color: "#194569",
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 8,
+    },
+    infoText: {
+        color: "#222",
+        marginBottom: 4,
+    },
+    link: {
+        color: "#194569",
+        textDecorationLine: "underline",
+        marginTop: 4,
+    },
+    routeItem: {
+        backgroundColor: "#e5e7eb",
+        marginVertical: 4,
+        padding: 12,
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    routeText: {
+        flex: 1,
+        color: "#222",
+        marginRight: 8,
+    },
+    joinCode: {
+        color: "#194569",
+        fontWeight: "bold",
+        textAlign: "right",
+        minWidth: 90,
+    },
+});
 
 export default RoutesCard;
