@@ -57,7 +57,7 @@ export default function RouteDetails() {
         if (!routeSteps.length) return;
         let url = `https://www.google.com/maps/dir/`;
         routeSteps.forEach((step) => {
-            url += `${step.latitude},${step.longitude}/`;
+            url += `${step.longitude},${step.latitude}/`;
         });
         Linking.openURL(url);
     };
