@@ -14,9 +14,9 @@ Wir haben es leider nicht geschafft, einen funktionierenden Docker-Container auf
 Es gibt 3 Testaccounts: 
 | Email | Passwort |
 | -------- | -------- |
-| test@gmail.com   | Test.1234   |
-| test2@gmail.com   | Test.1234   |
-| test3@gmail.com   | Test.1234   |
+| test@gmail.com   | Test.123   |
+| test2@gmail.com   | Test.123   |
+| test3@gmail.com   | Test.123   |
 
 - Dem ersten Account gehört die Route, die anderen beiden sind der Route beigetreten.
 - Man kann eine neue Route erstellen und einer vorhandenen über einen JoinCode beitreten.
