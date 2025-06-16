@@ -13,17 +13,17 @@ INSERT INTO public.address (address_id, city, country, house_number, postal_code
 INSERT INTO public.address (address_id, city, country, house_number, postal_code, street) VALUES (14, 'Feldkirchen bei Graz', 'AT', '179', '8073', 'Triester Strasse');
 INSERT INTO public.address (address_id, city, country, house_number, postal_code, street) VALUES (15, 'Lebring', 'AT', '14', '8403', 'Leibnitzer Strasse');
 
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (7, 'din@cajic.com', 'Din ', 'Cajic', '$2a$10$mLuYmTBLxfQZT1HeQVLtSutbnhXfM2PBbxsBemzoLHmAVjEEbsmA.');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1, 'david@fink.com', 'David', 'Fink', '$2a$10$OXgD3lfuZzwEFyzNYImxzOqTNYL9VHNcN6.h1YEms/B8SkyiirtiC');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (2, 'mario@wind.com', 'Mario', 'Windberger', '$2a$10$4kdwTEdGg7SsUyD8qLSKj.Y224rBevnkJ/gL99BQUIb.yjxST9Ufe');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (3, 'mario@windberger.com', 'Mario', 'Windberger', '$2a$10$fgTfVifZzYzngQ/nH7/8YuhGXcIfu70msN3vVVfrsq98LueF.g4ru');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (6, 'nico@riedner.com', 'Nico', 'Riedner', '$2a$10$zzySX4C8eV2wLZSLSc4AzeSEmjZwcRTmHF2VevovNqOqYPSc3McFi');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (5, 'test1@gmail.com', 'Test 1', 'Test 1', '$2a$10$twJm8/coUDp0rbTHVWy4SO5zP1yQQhA2HVLx61CGN89iKioC1gNq2');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (8, 'din2@cajic.com', 'Din', 'Cajic', '$2a$10$znWrqjbBoEWtnKFRThKXNOmcl5lFWfdNaOh9/2t8Izuf9rH4yMSNq');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (9, 'johanna.hechtl@gmail.com', null, null, '$2a$10$1bXvT56nIYFzAJyrR2YKhOb7BZHMkkr64Eks8D8Gc5zLzR5Qqv5Lu');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (10, 'test@gmail.com', 'Mario', 'Windberger', '$2a$10$kLf2W3GiP8tyGTVd82n7z.uMTMsvXfjrDFtd5CGFrNzZDxhMoaSkS');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (11, 'test2@gmail.com', 'Johanna', 'Hechtl', '$2a$10$3j1yq3tjwiIyijyWB8ERJOJ/zrkEKh//2dy1L9bQvbPaE7vV124ey');
-INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (12, 'test3@gmail.com', 'Din', 'Cajic', '$2a$10$YpsW0K/QYywXGqemd4AIx.6svAWqplhxsdZACys6yXm6zJj3e0tLa');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1007, 'din@cajic.com', 'Din ', 'Cajic', '$2a$10$mLuYmTBLxfQZT1HeQVLtSutbnhXfM2PBbxsBemzoLHmAVjEEbsmA.');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1001, 'david@fink.com', 'David', 'Fink', '$2a$10$OXgD3lfuZzwEFyzNYImxzOqTNYL9VHNcN6.h1YEms/B8SkyiirtiC');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1002, 'mario@wind.com', 'Mario', 'Windberger', '$2a$10$4kdwTEdGg7SsUyD8qLSKj.Y224rBevnkJ/gL99BQUIb.yjxST9Ufe');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1003, 'mario@windberger.com', 'Mario', 'Windberger', '$2a$10$fgTfVifZzYzngQ/nH7/8YuhGXcIfu70msN3vVVfrsq98LueF.g4ru');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1006, 'nico@riedner.com', 'Nico', 'Riedner', '$2a$10$zzySX4C8eV2wLZSLSc4AzeSEmjZwcRTmHF2VevovNqOqYPSc3McFi');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1005, 'test1@gmail.com', 'Test 1', 'Test 1', '$2a$10$twJm8/coUDp0rbTHVWy4SO5zP1yQQhA2HVLx61CGN89iKioC1gNq2');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1008, 'din2@cajic.com', 'Din', 'Cajic', '$2a$10$znWrqjbBoEWtnKFRThKXNOmcl5lFWfdNaOh9/2t8Izuf9rH4yMSNq');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1009, 'johanna.hechtl@gmail.com', null, null, '$2a$10$1bXvT56nIYFzAJyrR2YKhOb7BZHMkkr64Eks8D8Gc5zLzR5Qqv5Lu');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1010, 'test@gmail.com', 'Mario', 'Windberger', '$2a$10$kLf2W3GiP8tyGTVd82n7z.uMTMsvXfjrDFtd5CGFrNzZDxhMoaSkS');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1011, 'test2@gmail.com', 'Johanna', 'Hechtl', '$2a$10$3j1yq3tjwiIyijyWB8ERJOJ/zrkEKh//2dy1L9bQvbPaE7vV124ey');
+INSERT INTO public.user_account (user_id, email, firstname, lastname, password) VALUES (1012, 'test3@gmail.com', 'Din', 'Cajic', '$2a$10$YpsW0K/QYywXGqemd4AIx.6svAWqplhxsdZACys6yXm6zJj3e0tLa');
 
 INSERT INTO public.route (driver, end_address, route_id, start_address, start_time, join_code) VALUES (1, 1, 1, 1, '2025-12-31 23:59:00.000000', 'WQUD1CHG');
 INSERT INTO public.route (driver, end_address, route_id, start_address, start_time, join_code) VALUES (2, 2, 7, 1, '2025-05-31 02:05:00.000000', 'HYQM92QE');
