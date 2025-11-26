@@ -33,7 +33,7 @@ function Dashboard() {
         if (userId == null) {
             console.error("User ID is null!");
         }
-
+        // await
         getRoutes(userId)
             .then((routes) => {
                 setDriverRoutes(routes);
