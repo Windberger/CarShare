@@ -5,7 +5,7 @@ import at.htlkaindorf.backend.pojos.RouteMember;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {RouteMapper.class, UserAccountMapper.class, AddressMapper.class})
+@Mapper(componentModel = "spring", uses = {RouteMapper.class, UserAccountMapper.class})
 public interface RouteMemberDetailMapper {
     @Mapping(source = "route.routeId", target = "routeId")
     @Mapping(source = "member.userId", target = "memberId")

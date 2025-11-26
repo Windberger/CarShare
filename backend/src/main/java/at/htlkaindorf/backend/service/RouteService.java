@@ -5,10 +5,7 @@ import at.htlkaindorf.backend.exception.DuplicateEntryException;
 import at.htlkaindorf.backend.exception.LoginException;
 import at.htlkaindorf.backend.exception.ResourceNotFoundException;
 import at.htlkaindorf.backend.exception.RouteException;
-import at.htlkaindorf.backend.mapper.AddressMapper;
-import at.htlkaindorf.backend.mapper.RouteDetailMapper;
-import at.htlkaindorf.backend.mapper.RouteMapper;
-import at.htlkaindorf.backend.mapper.UserAccountMapper;
+import at.htlkaindorf.backend.mapper.*;
 import at.htlkaindorf.backend.pojos.Address;
 import at.htlkaindorf.backend.pojos.Route;
 import at.htlkaindorf.backend.pojos.UserAccount;
@@ -20,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -36,6 +34,7 @@ public class RouteService {
     private final AddressMapper addressMapper;
     private final UserAccountMapper userAccountMapper;
     private final RouteDetailMapper routeDetailMapper;
+    private final CreateAddressMapper createAddressMapper;
     private final Random random = new Random();
 
     public Iterable<RouteDTO> getAllDriverRoutes(Long userId) {
@@ -55,9 +54,29 @@ public class RouteService {
      */
     public Long createRoute(CreateRouteDTO createRouteDTO) {
 
-        Optional<Address> startAddress = addressRepository.findById(createRouteDTO.getStartAddressId());
-        Optional<Address> endAddress = addressRepository.findById(createRouteDTO.getEndAddressId());
+        if(createRouteDTO.getAddresses().size() < 2){
+            throw new RouteException("At least two addresses must be provided");
+        }
+
+        Address startAddress = createAddressMapper.toEntity(createRouteDTO.getAddresses().get(0));
+        Address endAddress = createAddressMapper.toEntity(createRouteDTO.getAddresses().get(createRouteDTO.getAddresses().size() - 1));
+        List<Address> middleAddresses = createRouteDTO.getAddresses().stream().filter(
+                address -> !address.getPlaceId().equals(startAddress.getPlaceId()) && !address.getPlaceId().equals(endAddress.getPlaceId())
+        ).map(createAddressMapper::toEntity).toList();
+
+        Optional<Address> startAddressOptional = addressRepository.findByPlaceId(startAddress.getPlaceId());
+        Optional<Address> endAddressOptional = addressRepository.findByPlaceId(endAddress.getPlaceId());
         Optional<UserAccount> driver = userAccountRepository.findById(createRouteDTO.getDriverId());
+
+        if(startAddressOptional.isEmpty()) {
+            addressRepository.save(startAddress);
+            startAddressOptional = Optional.of(startAddress);
+        }
+        if(endAddressOptional.isEmpty()) {
+            addressRepository.save(endAddress);
+            endAddressOptional = Optional.of(endAddress);
+        }
+
 
         StringBuilder joinCodeBuilder = new StringBuilder();
         String joinCode;
@@ -79,15 +98,15 @@ public class RouteService {
             count++;
         } while (routeRepository.existsByJoinCode(joinCode));
 
-        if (startAddress.isPresent() && endAddress.isPresent() && driver.isPresent()) {
-            RouteDTO routeDTO = new RouteDTO(
-                    null,
-                    addressMapper.toDto(startAddress.get()),
-                    addressMapper.toDto(endAddress.get()),
-                    createRouteDTO.getStartTime(),
-                    userAccountMapper.toDto(driver.get()),
-                    joinCode
-            );
+        if (startAddressOptional.isPresent() && endAddressOptional.isPresent() && driver.isPresent()) {
+            RouteDTO routeDTO = RouteDTO.builder()
+                    .routeId(null)
+                    .startAddress(startAddressOptional.get())
+                    .endAddress(endAddressOptional.get())
+                    .startTime(createRouteDTO.getStartTime())
+                    .driver(userAccountMapper.toDto(driver.get()))
+                    .joinCode(joinCode)
+                    .build();
 
             try {
                 routeRepository.save(routeMapper.toEntity(routeDTO));
@@ -97,8 +116,8 @@ public class RouteService {
             return routeRepository.findByJoinCode(joinCode).getRouteId();
         } else {
             throw new ResourceNotFoundException("Route could not be created, because one of the following was not found: " +
-                    "Start Address: " + startAddress.isPresent() +
-                    ", End Address: " + endAddress.isPresent() +
+                    "Start Address: " + startAddressOptional.isPresent() +
+                    ", End Address: " + endAddressOptional.isPresent() +
                     ", Driver: " + driver.isPresent());
         }
     }

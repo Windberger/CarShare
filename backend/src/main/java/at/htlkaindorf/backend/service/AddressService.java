@@ -24,57 +24,58 @@ public class AddressService {
 
     public Long addAddress(CreateAddressDTO addressDTO) {
 
-        addressDTO.setCity(
-                addressDTO.getCity()
-                        .replaceAll("ß", "ss")
-                        .replaceAll("ä", "ae")
-                        .replaceAll("Ä", "Ae")
-                        .replaceAll("ö", "oe")
-                        .replaceAll("Ö", "Oe")
-                        .replaceAll("ü", "ue")
-                        .replaceAll("Ü", "Ue")
-        );
+//        addressDTO.setCity(
+//                addressDTO.getCity()
+//                        .replaceAll("ß", "ss")
+//                        .replaceAll("ä", "ae")
+//                        .replaceAll("Ä", "Ae")
+//                        .replaceAll("ö", "oe")
+//                        .replaceAll("Ö", "Oe")
+//                        .replaceAll("ü", "ue")
+//                        .replaceAll("Ü", "Ue")
+//        );
+//
+//        addressDTO.setStreet(
+//                addressDTO.getStreet()
+//                        .replaceAll("ß", "ss")
+//                        .replaceAll("ä", "ae")
+//                        .replaceAll("Ä", "Ae")
+//                        .replaceAll("ö", "oe")
+//                        .replaceAll("Ö", "Oe")
+//                        .replaceAll("ü", "ue")
+//                        .replaceAll("Ü", "Ue")
+//        );
 
-        addressDTO.setStreet(
-                addressDTO.getStreet()
-                        .replaceAll("ß", "ss")
-                        .replaceAll("ä", "ae")
-                        .replaceAll("Ä", "Ae")
-                        .replaceAll("ö", "oe")
-                        .replaceAll("Ö", "Oe")
-                        .replaceAll("ü", "ue")
-                        .replaceAll("Ü", "Ue")
-        );
+//        if (!addressValidationService.isValidAddress(addressDTO)) {
+//            throw new InvalidAddressException("Invalid address");
+//        }
+//
+//        Address address = createAddressMapper.toEntity(addressDTO);
 
-        if (!addressValidationService.isValidAddress(addressDTO)) {
-            throw new InvalidAddressException("Invalid address");
-        }
-
-        Address address = createAddressMapper.toEntity(addressDTO);
-
-        try {
-            Optional<Address> existingAddress = addressRepository.findByDetails(
-                    address.getCountry(),
-                    address.getPostalCode(),
-                    address.getCity(),
-                    address.getStreet(),
-                    address.getHouseNumber()
-            );
-
-            if (existingAddress.isPresent()) {
-                return existingAddress.get().getAddressId();
-            }
-
-            Address savedAddress = addressRepository.save(address);
-            return savedAddress.getAddressId();
-        } catch (DataIntegrityViolationException e) {
-            return addressRepository.findByDetails(
-                    address.getCountry(),
-                    address.getPostalCode(),
-                    address.getCity(),
-                    address.getStreet(),
-                    address.getHouseNumber()
-            ).orElseThrow(() -> new RuntimeException("Unexpected error")).getAddressId();
-        }
+//        try {
+//            Optional<Address> existingAddress = addressRepository.findByDetails(
+//                    address.getCountry(),
+//                    address.getPostalCode(),
+//                    address.getCity(),
+//                    address.getStreet(),
+//                    address.getHouseNumber()
+//            );
+//
+//            if (existingAddress.isPresent()) {
+//                return existingAddress.get().getAddressId();
+//            }
+//
+//            Address savedAddress = addressRepository.save(address);
+//            return savedAddress.getAddressId();
+//        } catch (DataIntegrityViolationException e) {
+//            return addressRepository.findByDetails(
+//                    address.getCountry(),
+//                    address.getPostalCode(),
+//                    address.getCity(),
+//                    address.getStreet(),
+//                    address.getHouseNumber()
+//            ).orElseThrow(() -> new RuntimeException("Unexpected error")).getAddressId();
+//        }
+        return null;
     }
 }

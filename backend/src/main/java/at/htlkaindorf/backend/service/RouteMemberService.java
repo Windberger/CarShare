@@ -38,7 +38,7 @@ public class RouteMemberService {
     private final AddressRepository addressRepository;
     private final RouteMemberDetailMapper routeMemberDetailMapper;
 
-    public void addRouteMember(String joinCode, Long userId, CreateAddressDTO createStartAddress, CreateAddressDTO createEndAddress) {
+    public void addRouteMember(String joinCode, Long userId, CreateAddressDTO startAddressDTO, CreateAddressDTO endAddressDTO) {
         Route route = routeMapper.toEntity(routeService.getRouteByJoinCode(joinCode));
 
         if (route.getDriver().getUserId().equals(userId)) {
@@ -48,8 +48,8 @@ public class RouteMemberService {
         UserAccount userAccount = userAccountMapper.toEntity(userAccountService.getUserById(userId));
         RouteMemberPK routeMemberPK = new RouteMemberPK(route.getRouteId(), userAccount.getUserId());
 
-        Long startAddressId = addressService.addAddress(createStartAddress);
-        Long endAddressId = addressService.addAddress(createEndAddress);
+        Long startAddressId = addressRepository.save(new Address(null, startAddressDTO.getPlaceId(), startAddressDTO.getDescription())).getAddressId();
+        Long endAddressId = addressRepository.save(new Address(null, endAddressDTO.getPlaceId(), endAddressDTO.getDescription())).getAddressId();
         Optional<Address> startAddress = addressRepository.findById(startAddressId);
         Optional<Address> endAddress = addressRepository.findById(endAddressId);
 
@@ -73,8 +73,7 @@ public class RouteMemberService {
     public RouteMemberDetailDTO removeMemberOfRoute(Long routeId, Long memberId) {
         Iterable<RouteMemberDetailDTO> routeMembers = getMembersOfRoute(routeId);
 
-        for (RouteMemberDetailDTO routeMember : routeMembers
-        ) {
+        for (RouteMemberDetailDTO routeMember : routeMembers) {
 
             if (routeMember.getMemberId().equals(memberId)) {
                 log.info("Removing route member with ID: {}", memberId);

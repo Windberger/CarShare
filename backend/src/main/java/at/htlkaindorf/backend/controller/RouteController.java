@@ -2,15 +2,11 @@ package at.htlkaindorf.backend.controller;
 
 import at.htlkaindorf.backend.dto.CreateRouteDTO;
 import at.htlkaindorf.backend.dto.RouteDTO;
-import at.htlkaindorf.backend.dto.RouteDetailDTO;
 import at.htlkaindorf.backend.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/routes")

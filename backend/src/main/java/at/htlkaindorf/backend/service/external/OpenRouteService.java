@@ -33,48 +33,50 @@ public class OpenRouteService {
     private final RestTemplate restTemplate;
 
     public CoordinateAddress getCoordinateAddress(Address address) {
-        log.info("GetCoordinateAddress");
-        String query = String.join(" ", address.getStreet() + " " + address.getHouseNumber(),
-                address.getPostalCode() + " " + address.getCity());
+//        log.info("GetCoordinateAddress");
+//        String query = String.join(" ", address.getStreet() + " " + address.getHouseNumber(),
+//                address.getPostalCode() + " " + address.getCity());
+//
+//        String uri = UriComponentsBuilder
+//                .fromUriString("https://api.openrouteservice.org/geocode/search")
+//                .queryParam("api_key", apiKey)
+//                .queryParam("text", query)
+//                .queryParam("size", 1)
+//                .build()
+//                .toUriString();
+//        log.info(uri);
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Accept-Language", "de-DE");
+//
+//        HttpEntity<Void> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<JsonNode> response = restTemplate.exchange(uri, HttpMethod.GET, entity, JsonNode.class);
+//
+//        if (response.getBody() == null || response.getStatusCode() != HttpStatus.OK) {
+//            throw new RouteException("Error while requesting coordinates: " + response.getHeaders());
+//        }
+//        JsonNode coords = response.getBody()
+//                .path("features")
+//                .get(0)
+//                .path("geometry")
+//                .path("coordinates");
+//        log.info(response.getBody().toString())
+//        ;
+//
+//        CoordinateAddress coordinateAddress = new CoordinateAddress(
+//                address.getAddressId(),
+//                address.getCountry(),
+//                address.getPostalCode(),
+//                address.getCity(),
+//                address.getStreet(),
+//                address.getHouseNumber(),
+//                coords.get(0).asDouble(),
+//                coords.get(1).asDouble()
+//        );
 
-        String uri = UriComponentsBuilder
-                .fromUriString("https://api.openrouteservice.org/geocode/search")
-                .queryParam("api_key", apiKey)
-                .queryParam("text", query)
-                .queryParam("size", 1)
-                .build()
-                .toUriString();
-        log.info(uri);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept-Language", "de-DE");
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<JsonNode> response = restTemplate.exchange(uri, HttpMethod.GET, entity, JsonNode.class);
-
-        if (response.getBody() == null || response.getStatusCode() != HttpStatus.OK) {
-            throw new RouteException("Error while requesting coordinates: " + response.getHeaders());
-        }
-        JsonNode coords = response.getBody()
-                .path("features")
-                .get(0)
-                .path("geometry")
-                .path("coordinates");
-        log.info(response.getBody().toString());
-
-        CoordinateAddress coordinateAddress = new CoordinateAddress(
-                address.getAddressId(),
-                address.getCountry(),
-                address.getPostalCode(),
-                address.getCity(),
-                address.getStreet(),
-                address.getHouseNumber(),
-                coords.get(0).asDouble(),
-                coords.get(1).asDouble()
-        );
-
-        return coordinateAddress;
+//        return coordinateAddress;
+        return null;
     }
 
 
@@ -131,13 +133,13 @@ public class OpenRouteService {
                 }
             }
 
-            return new RouteResultDTO(
-                    addresses,
-                    null,
-                    null,
-                    null,
-                    null
-            );
+//            return new RouteResultDTO(
+//                    addresses,
+//                    null,
+//                    null,
+//                    null,
+//                    null
+//            );
         }
         return null;
     }
