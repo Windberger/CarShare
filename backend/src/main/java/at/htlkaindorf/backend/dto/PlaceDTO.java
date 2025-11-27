@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateAddressDTO {
-
+public class PlaceDTO {
     private String placeId;
     private String description;
 }

@@ -9,25 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(
-        name = "address",
-        uniqueConstraints = @UniqueConstraint(
-                name = "uc_address_unique_combination",
-                columnNames = {"country", "postal_code", "city", "street", "house_number"}
-        )
-)
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
 
-    private String country;
+    @Column(nullable = false, unique = true)
+    private String placeId;
 
-    private String postalCode;
-
-    private String city;
-
-    private String street;
-
-    private String houseNumber;
+    private String description;
 }
